@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pincak Lamak - Rumah Makan Padang</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f9f5f0;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* ========== HEADER ========== */
+    header {
+      background: linear-gradient(135deg, #d92323 0%, #a31c1c 100%);
+      color: white;
+      text-align: center;
+      padding: 2.5rem 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .logo-img {
+      height: 350px;
+      filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+    }
+
+    .banner-logo {
+     width: 500px; /* Ganti dengan ukuran ideal */
+     height: auto; /* Pertahankan aspect ratio */
+    }
+
+    .tagline {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin: 0.5rem 0 1.5rem;
+      color: #fff8e1;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .delivery-text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      background: rgba(0, 0, 0, 0.18);
+      display: inline-block;
+      padding: 0.8rem 2.5rem;
+      border-radius: 50px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ========== MAIN CONTENT ========== */
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .menu-container {
+      flex: 3;
+      padding-right: 2rem;
+    }
+
+    .order-summary {
+      flex: 1;
+      background-color: white;
+      padding: 1.8rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 2rem;
+      height: fit-content;
+    }
+
+    .menu-category h3 {
+      font-family: 'Playfair Display', serif;
+      background-color: #d92323;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .menu-item {
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .menu-item:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .menu-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .menu-item-content {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .menu-item h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      margin-bottom: 0.8rem;
+      color: #d92323;
+    }
+
+    .menu-description {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #555;
+      transition: all 0.4s ease;
+    }
+
+    .menu-description.expanded {
+      -webkit-line-clamp: unset;
+    }
+
+    .read-more-btn {
+      color: #d92323;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0.5rem 0 1.2rem;
+      display: inline-block;
+      align-self: flex-start;
+      transition: color 0.3s;
+    }
+
+    .read-more-btn:hover {
+      color: #a31c1c;
+    }
+
+    .price-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .price {
+      font-weight: 700;
+      color: #d92323;
+      font-size: 1.2rem;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+    }
+
+    .quantity-controls button {
+      background-color: #d92323;
+      color: white;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+
+    .quantity-controls button:hover {
+      background-color: #a31c1c;
+    }
+
+    .quantity-controls span {
+      margin: 0 12px;
+      min-width: 24px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* ========== ORDER SUMMARY ========== */
+    #order-items {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 1.5rem;
+      padding-right: 0.5rem;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .order-item-name {
+      flex: 2;
+      font-weight: 500;
+    }
+
+    .order-item-quantity {
+      flex: 1;
+      text-align: center;
+    }
+
+    .order-item-price {
+      flex: 1;
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .order-summary h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+      color: #d92323;
+      text-align: center;
+    }
+
+    .order-summary p {
+      margin: 1rem 0;
+      font-size: 1.1rem;
+    }
+
+    .order-summary strong {
+      font-weight: 600;
+    }
+
+    .order-button {
+      display: block;
+      background-color: #25D366;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-top: 1.5rem;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    }
+
+    .order-button:hover {
+      background-color: #128C7E;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 992px) {
+      .menu-container {
+        padding-right: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      main {
+        flex-direction: column;
+        padding: 1.5rem;
+      }
+
+      .menu-container {
+        padding-right: 0;
+        margin-bottom: 2rem;
+      }
+
+      .order-summary {
+        position: static;
+        margin-top: 1rem;
+      }
+
+      .delivery-text {
+        font-size: 1.6rem;
+        padding: 0.6rem 1.8rem;
+      }
+
+      .tagline {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .delivery-text {
+        font-size: 1.3rem;
+        padding: 0.5rem 1.5rem;
+      }
+
+      .tagline {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== HEADER ========== -->
+  <header>
+    <div class="logo-container">
+      <img src="logo2.png" alt="Pincak Lamak" class="logo-img">
+    </div>    
+    <div class="delivery-text">Rumah Makan Padang - Delivery Order</div>
+  </header>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main>
+    <section class="menu-container" id="menu-list">
+      <!-- Menu items will be dynamically inserted here -->
+    </section>
+
+    <aside class="order-summary">
+      <h3>Pesanan Anda</h3>
+      <div id="order-items"></div>
+      <p><strong>Subtotal:</strong> <span id="subtotal">Rp 0</span></p>
+      <p><strong>Total:</strong> <span id="total">Rp 0</span></p>
+      <a id="wa-link" href="#" target="_blank" class="order-button">Pesan via WhatsApp</a>
+    </aside>
+  </main>
+
+  <script>
+    // Data menu dari JSON yang sudah diperbaiki
+    const menuData = {
+      "makanan": [
+        {
+          "NAMA MENU": "Rendang",
+          "FOTO": "images/rendang.png",
+          "DESKRIPSI": "Rendang adalah mahakarya kuliner Minangkabau yang dimasak dengan penuh kesabaran hingga bumbu meresap sempurna ke dalam daging. Terbuat dari daging sapi pilihan yang lembut dan padat, rendang dimasak perlahan bersama santan dan rempah-rempah khas hingga menghasilkan warna cokelat gelap yang menggoda. Setiap suapan menghadirkan harmoni rasa gurih, pedas, dan manis yang mendalam—bukan sekadar hidangan, tapi pengalaman rasa yang menghangatkan jiwa.",
+          "HARGA": 20000
+        },
+        {
+          "NAMA MENU": "Udang Balado",
+          "FOTO": "images/udang.png",
+          "DESKRIPSI": "Udang balado khas Padang adalah perpaduan sempurna antara kelezatan laut dan ledakan rasa dari sambal merah Minang yang khas. Udang segar dimasak dengan bumbu balado yang kaya akan cabai, bawang merah, dan tomat, menciptakan warna merah menyala yang memikat mata. Setiap udang terbalut sempurna oleh sambal pedas-gurih yang meresap hingga ke dalam, menghasilkan cita rasa yang kuat namun seimbang. Disajikan hangat dengan nasi putih pulen, udang balado menghadirkan keindahan dan kekayaan rasa dalam satu sajian estetik yang menggugah selera.",
+          "HARGA": 20000
+        },
+        {
+          "NAMA MENU": "Cumi",
+          "FOTO": "images/cumi.png",
+          "DESKRIPSI": "Gulai Cumi khas Padang adalah sajian laut yang kaya rasa dan tampil memikat dalam balutan kuah santan kental berwarna kuning keemasan. Cumi segar, yang kadang diisi dengan telur atau tahu, dimasak bersama rempah khas Minang seperti kunyit, jahe, dan serai, menghasilkan aroma harum yang menggoda. Teksturnya yang kenyal berpadu dengan gurih pedasnya kuah gulai menciptakan sensasi rasa yang kompleks namun harmonis. Disajikan dengan tampilan sederhana namun elegan, gulai cumi ini mencerminkan keindahan dan kekayaan kuliner Minang dalam satu piring yang estetik.",
+          "HARGA": 20000
+        },
+        {
+          "NAMA MENU": "Dendeng Batokok",
+          "FOTO": "images/dendengbatokok.png",
+          "DESKRIPSI": "Dendeng Batokok khas Padang adalah sajian daging sapi yang tipis, dipukul-pukul hingga pipih, lalu digoreng kering dan disiram sambal cabai hijau segar yang menggoda. Perpaduan warna daging kecokelatan dengan sambal lado mudo yang terang menciptakan tampilan yang estetik dan menggugah selera. Tekstur dendeng yang renyah di luar namun tetap empuk di dalam berpadu sempurna dengan rasa pedas, gurih, dan sedikit asam dari sambal khas Minang. Sajian ini bukan hanya kaya rasa, tapi juga mencerminkan keunikan teknik memasak dan kekayaan kuliner Ranah Minang.",
+          "HARGA": 20000
+        },
+        {
+          "NAMA MENU": "Kalio",
+          "FOTO": "images/kalio.png",
+          "DESKRIPSI": "Kalio adalah sajian khas Minang yang menggoda, terbuat dari potongan daging yang dimasak perlahan dalam kuah santan kental berwarna cokelat keemasan. Kaya akan rempah-rempah seperti lengkuas, kunyit, dan daun jeruk, kalio menghadirkan aroma harum dan rasa gurih manis yang menyatu sempurna. Teksturnya lembut meresap hingga ke serat daging, menciptakan pengalaman makan yang dalam dan autentik khas ranah Minang.",
+          "HARGA": 20000
+        },
+        {
+          "NAMA MENU": "Ayam Bakar",
+          "FOTO": "images/ayambakar.png",
+          "DESKRIPSI": "Ayam bakar khas Padang adalah sajian penuh pesona yang memadukan keharuman bumbu rempah dengan aroma asap pembakaran yang menggoda. Terbuat dari potongan ayam pilihan yang telah dimarinasi dalam bumbu khas Minang seperti serai, lengkuas, kunyit, dan cabai, lalu dibakar hingga permukaannya kecokelatan dan karamelisasi bumbu menempel sempurna. Setiap gigitan menghadirkan perpaduan rasa gurih, manis, dan pedas yang membalut daging ayam yang empuk—mewakili kehangatan dan kekayaan rasa Nusantara dalam satu piring estetik nan menggugah selera.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Ayam Pop",
+          "FOTO": "images/ayampop.png",
+          "DESKRIPSI": "Ayam Pop khas Padang adalah sajian istimewa yang memikat dengan kesederhanaannya yang elegan. Terbuat dari potongan ayam kampung pilihan yang direbus dalam air kelapa dan rempah-rempah ringan, ayam ini memiliki warna pucat alami namun menyimpan cita rasa gurih yang lembut di setiap serat dagingnya. Disajikan dengan sambal merah khas Minang yang pedas segar dan nasi hangat, Ayam Pop menyuguhkan kontras rasa yang harmonis—menjadikannya simbol kelezatan Padang yang tenang namun berkarakter.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Ikan Patin",
+          "FOTO": "images/gulaiikan.png",
+          "DESKRIPSI": "Gulai Ikan Patin khas Padang adalah sajian berkuah santan yang kaya rasa dan memikat secara visual. Ikan patin segar dimasak perlahan dalam kuah kuning keemasan yang kental, berpadu dengan rempah-rempah khas seperti kunyit, lengkuas, dan daun ruku-ruku yang harum. Tekstur ikan yang lembut menyatu sempurna dengan kuah gulai yang gurih, pedas, dan sedikit asam, menciptakan harmoni rasa yang mendalam. Disajikan dalam mangkuk sederhana namun penuh warna, gulai ini memancarkan kehangatan masakan rumah dengan sentuhan estetika khas Minang.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Ikan Balado",
+          "FOTO": "images/ikanbalado.png",
+          "DESKRIPSI": "Ikan Balado khas Padang adalah sajian menggoda yang memadukan renyahnya ikan goreng dengan sambal balado merah menyala yang kaya rasa. Ikan segar digoreng hingga kulitnya garing keemasan, lalu dilumuri sambal yang terbuat dari cabai merah, bawang, dan tomat, menciptakan aroma pedas yang menggugah selera. Warna kontras antara merah menyala sambal dan keemasan ikan menciptakan tampilan yang estetik, sementara perpaduan rasa gurih, pedas, dan sedikit manis menghadirkan sensasi kuliner khas Minang yang kuat dan memanjakan lidah.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Hati",
+          "FOTO": "images/hatisapi.png",
+          "DESKRIPSI": "Gulai Hati Sapi khas Padang adalah sajian kaya rempah yang menghadirkan kelezatan dalam setiap suapan. Potongan hati sapi yang empuk dimasak dalam kuah santan kental berwarna kuning keemasan, diperkaya dengan bumbu khas Minang seperti kunyit, lengkuas, dan serai. Aroma harum yang menggoda berpadu dengan tekstur lembut hati sapi, menciptakan rasa gurih dan pedas yang menyatu sempurna. Disajikan dalam tampilan sederhana namun berkelas, gulai ini mencerminkan kehangatan dan kekayaan rasa khas masakan Padang yang estetik dan menggugah selera.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Usus",
+          "FOTO": "images/usus.png",
+          "DESKRIPSI": "Gulai Usus khas Padang adalah sajian unik dan menggoda yang memadukan tekstur kenyal usus sapi dengan kuah santan kental berwarna kuning keemasan yang kaya rempah. Usus dibersihkan dengan teliti, lalu dimasak perlahan bersama bumbu khas Minang seperti kunyit, jahe, dan serai hingga meresap sempurna. Aroma harum rempah menyatu dengan gurihnya santan menciptakan cita rasa yang dalam dan menggugah selera. Disajikan dengan tampilan hangat dan sederhana, gulai usus menghadirkan keindahan kuliner Padang yang autentik dalam sajian yang estetik dan kaya rasa.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Paru Goreng",
+          "FOTO": "images/parugoreng.png",
+          "DESKRIPSI": "Paru Goreng khas Padang adalah sajian lezat dengan tampilan yang menggoda dan cita rasa yang khas. Paru sapi direbus bersama rempah pilihan, kemudian digoreng hingga kering dan renyah di luar, namun tetap empuk di dalam. Warna cokelat keemasan dan tekstur berpori yang unik menciptakan kesan estetik yang kuat di atas piring, apalagi bila dipadukan dengan taburan bawang goreng atau sambal lado. Setiap gigitan menyajikan perpaduan rasa gurih, aromatik, dan sedikit pedas yang mencerminkan kelezatan khas Minang yang autentik dan tak terlupakan.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Telur Dadar",
+          "FOTO": "images/telurdadar.png",
+          "DESKRIPSI": "Telur Dadar khas Padang adalah sajian sederhana yang tampil memikat dengan tekstur tebal, warna keemasan, dan aroma harum rempah yang menggoda. Terbuat dari telur yang dikocok bersama daun bawang, cabai, bawang merah, dan sedikit kelapa parut atau tepung, kemudian digoreng hingga bagian luar garing sementara bagian dalam tetap lembut dan berbumbu. Potongannya yang besar dan berlapis menciptakan tampilan estetik nan menggugah di atas piring nasi Padang. Telur dadar ini bukan sekadar lauk, tapi simbol kelezatan rumahan khas Minang yang selalu dirindukan.",
+          "HARGA": 10000
+        },
+        {
+          "NAMA MENU": "Ikan Goreng",
+          "FOTO": "images/ikangoreng.png",
+          "DESKRIPSI": "Ikan Goreng khas Padang adalah sajian sederhana namun menggoda, dengan tampilan keemasan yang renyah di luar dan daging ikan yang lembut di dalam. Ikan segar dibumbui dengan rempah khas Minang seperti bawang putih, kunyit, dan garam, lalu digoreng hingga matang sempurna dan harum menggoda. Disajikan hangat dengan sambal lado dan nasi putih, ikan goreng ini tampak estetik dalam kesederhanaannya, memancarkan cita rasa tradisional yang gurih, renyah, dan selalu dirindukan dalam setiap suapan.",
+          "HARGA": 10000
+        },
+        {
+          "NAMA MENU": "Sayur Nangka",
+          "FOTO": "images/sayurnangka.png",
+          "DESKRIPSI": "Sayur Nangka khas Padang adalah sajian berkuah santan yang menghadirkan kehangatan dan kekayaan rasa dalam balutan warna kuning keemasan yang menggoda. Potongan nangka muda dimasak bersama santan dan rempah-rempah khas Minang seperti kunyit, lengkuas, dan daun salam, menciptakan aroma harum yang khas dan menggugah selera. Tekstur nangka yang lembut berpadu sempurna dengan kuah gurih yang kaya rasa. Disajikan hangat sebagai pelengkap nasi Padang, sayur ini tampak estetik dengan kesederhanaan tampilannya namun menyimpan cita rasa yang mendalam dan memanjakan lidah.",
+          "HARGA": 5000
+        },
+        {
+          "NAMA MENU": "Perkedel",
+          "FOTO": "images/perkedel.png",
+          "DESKRIPSI": "Perkedel khas Padang adalah camilan pelengkap yang sederhana namun penuh pesona rasa dan tampilan yang menggugah selera. Terbuat dari kentang yang digoreng, dihaluskan, lalu dicampur dengan bawang, daun seledri, dan bumbu khas, kemudian digoreng hingga berwarna keemasan dengan permukaan renyah dan bagian dalam yang lembut. Bentuknya yang bulat pipih dengan warna cokelat keemasan menciptakan kesan estetik yang hangat di atas piring nasi Padang. Perkedel ini bukan sekadar pelengkap, tapi penyeimbang rasa yang sempurna dalam setiap sajian Minang.",
+          "HARGA": 5000
+        }
+      ],
+      "minuman": [
+        {
+          "NAMA MENU": "Es Jeruk",
+          "FOTO": "images/esjeruk.png",
+          "DESKRIPSI": "Es Jeruk adalah minuman segar yang memikat dengan warna oranye cerah alami dan tampilan bening yang menggoda. Terbuat dari perasan jeruk segar yang manis-asam, disajikan dengan es batu yang mempercantik tampilannya dalam gelas tinggi berembun. Aroma citrus yang harum berpadu dengan sensasi dingin yang menyegarkan, menjadikan es jeruk sebagai pelengkap sempurna di tengah hidangan lezat. Kesederhanaannya menghadirkan kesan estetik yang menyenangkan, sekaligus menyegarkan tubuh dan pikiran dalam setiap tegukan.",
+          "HARGA": 5000
+        },
+        {
+          "NAMA MENU": "Es Teh",
+          "FOTO": "images/esteh.png",
+          "DESKRIPSI": "Es Teh adalah minuman klasik yang tampil elegan dengan warna cokelat keemasan yang jernih dan menggoda. Disajikan dalam gelas tinggi berisi es batu yang berkilau, es teh memancarkan kesegaran yang menenangkan sejak pandangan pertama. Aroma teh yang ringan berpadu dengan rasa manis seimbang, menjadikannya pelengkap sempurna untuk segala jenis hidangan. Tampilan sederhananya justru menghadirkan kesan estetik yang bersih dan menyegarkan, menjadikan setiap tegukan es teh sebagai jeda yang menyejukkan di tengah hangatnya sajian.",
+          "HARGA": 5000
+        },
+        {
+          "NAMA MENU": "Jeruk Hangat",
+          "FOTO": "images/jerukhangat.png",
+          "DESKRIPSI": "Jeruk hangat adalah minuman menyehatkan yang tampil cantik dalam kesederhanaannya, dengan warna oranye cerah yang hangat dan aroma citrus yang segar. Disajikan dalam gelas bening atau cangkir sederhana, uap lembut yang mengepul dari permukaannya menciptakan kesan estetik yang menenangkan. Perasan jeruk segar yang hangat ini menghadirkan perpaduan rasa manis dan asam yang lembut, memberikan kehangatan alami sekaligus menyegarkan tubuh. Jeruk hangat bukan hanya minuman penghangat, tapi juga simbol kesegaran yang menenangkan dalam tampilan yang sederhana namun memesona.",
+          "HARGA": 5000
+        },
+        {
+          "NAMA MENU": "Teh Hangat",
+          "FOTO": "images/tehhangat.png",
+          "DESKRIPSI": "Teh hangat adalah sajian minuman yang sederhana namun penuh kehangatan dan estetika alami. Disajikan dalam cangkir atau gelas bening, warna cokelat keemasan teh yang mengepul lembut menciptakan suasana tenang dan nyaman. Aroma khas daun teh yang harum menguar perlahan, menghadirkan sensasi relaksasi sebelum bahkan diseruput. Dengan rasa yang lembut dan menenangkan, teh hangat menjadi pelengkap sempurna di tengah hidangan atau sebagai penutup yang hangat setelah santapan lezat, menciptakan pengalaman minum yang estetik dan penuh kedamaian.",
+          "HARGA": 5000
+        },
+        {
+          "NAMA MENU": "Teh Tawar Hangat",
+          "FOTO": "images/tehtawar.png",
+          "DESKRIPSI": "Teh tawar hangat adalah minuman yang merepresentasikan kesederhanaan dengan pesona alami yang menenangkan. Disajikan dalam cangkir bening atau keramik sederhana, warna cokelat keemasan dari teh yang mengepul lembut menghadirkan nuansa hangat dan estetik. Tanpa tambahan gula, rasa murni daun teh terasa lembut di lidah, memberikan ketenangan sekaligus kesegaran yang halus. Aroma teh yang ringan namun khas memperkaya pengalaman minum, menjadikan teh tawar hangat sebagai pelengkap sempurna dalam setiap waktu istirahat atau setelah menikmati hidangan yang kaya rasa.",
+          "HARGA": 5000
+        }
+      ]
+    };
+
+    // Variabel untuk menyimpan pesanan
+    let cart = [];
+
+    // Fungsi untuk menampilkan menu
+    function displayMenu() {
+      const menuList = document.getElementById('menu-list');
+      
+      // Tampilkan makanan
+      const foodSection = document.createElement('div');
+      foodSection.className = 'menu-category';
+      foodSection.innerHTML = '<h3>Makanan</h3><div class="menu-grid" id="food-grid"></div>';
+      menuList.appendChild(foodSection);
+      
+      const foodGrid = document.getElementById('food-grid');
+      menuData.makanan.forEach(item => {
+        foodGrid.appendChild(createMenuItem(item));
+      });
+      
+      // Tampilkan minuman
+      const drinkSection = document.createElement('div');
+      drinkSection.className = 'menu-category';
+      drinkSection.innerHTML = '<h3>Minuman</h3><div class="menu-grid" id="drink-grid"></div>';
+      menuList.appendChild(drinkSection);
+      
+      const drinkGrid = document.getElementById('drink-grid');
+      menuData.minuman.forEach(item => {
+        drinkGrid.appendChild(createMenuItem(item));
+      });
+    }
+
+    // Fungsi untuk membuat elemen menu item
+    function createMenuItem(item) {
+      const menuItem = document.createElement('div');
+      menuItem.className = 'menu-item';
+      
+      // Buat elemen-elemen
+      const img = document.createElement('img');
+      img.src = item.FOTO;
+      img.alt = item['NAMA MENU'];
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'menu-item-content';
+      
+      const title = document.createElement('h4');
+      title.textContent = item['NAMA MENU'];
+      
+      const descContainer = document.createElement('div');
+      descContainer.className = 'menu-description';
+      descContainer.textContent = item.DESKRIPSI;
+      
+      const readMoreBtn = document.createElement('button');
+      readMoreBtn.className = 'read-more-btn';
+      readMoreBtn.textContent = 'More';
+      
+      const priceControls = document.createElement('div');
+      priceControls.className = 'price-controls';
+      
+      const priceSpan = document.createElement('span');
+      priceSpan.className = 'price';
+      priceSpan.textContent = `Rp ${item.HARGA.toLocaleString('id-ID')}`;
+      
+      const quantityDiv = document.createElement('div');
+      quantityDiv.className = 'quantity-controls';
+      quantityDiv.innerHTML = `
+        <button class="decrease">-</button>
+        <span class="quantity">0</span>
+        <button class="increase">+</button>
+      `;
+      
+      // Susun elemen
+      priceControls.appendChild(priceSpan);
+      priceControls.appendChild(quantityDiv);
+      
+      contentDiv.appendChild(title);
+      contentDiv.appendChild(descContainer);
+      contentDiv.appendChild(readMoreBtn);
+      contentDiv.appendChild(priceControls);
+      
+      menuItem.appendChild(img);
+      menuItem.appendChild(contentDiv);
+      
+      // Event listener untuk tombol More/Less
+      readMoreBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        descContainer.classList.toggle('expanded');
+        readMoreBtn.textContent = 
+          descContainer.classList.contains('expanded') ? 'Less' : 'More';
+      });
+      
+      // Event listener untuk quantity
+      const increaseBtn = quantityDiv.querySelector('.increase');
+      const decreaseBtn = quantityDiv.querySelector('.decrease');
+      const quantitySpan = quantityDiv.querySelector('.quantity');
+      
+      increaseBtn.addEventListener('click', () => {
+        const currentQty = parseInt(quantitySpan.textContent);
+        quantitySpan.textContent = currentQty + 1;
+        updateCart(item, currentQty + 1);
+      });
+      
+      decreaseBtn.addEventListener('click', () => {
+        const currentQty = parseInt(quantitySpan.textContent);
+        if (currentQty > 0) {
+          quantitySpan.textContent = currentQty - 1;
+          updateCart(item, currentQty - 1);
+        }
+      });
+      
+      return menuItem;
+    }
+
+    // Fungsi untuk memperbarui keranjang belanja
+    function updateCart(item, quantity) {
+      // Cari apakah item sudah ada di cart
+      const existingItemIndex = cart.findIndex(cartItem => cartItem.name === item['NAMA MENU']);
+      
+      if (existingItemIndex !== -1) {
+        if (quantity === 0) {
+          // Hapus item jika quantity 0
+          cart.splice(existingItemIndex, 1);
+        } else {
+          // Update quantity
+          cart[existingItemIndex].quantity = quantity;
+        }
+      } else if (quantity > 0) {
+        // Tambahkan item baru
+        cart.push({
+          name: item['NAMA MENU'],
+          price: item.HARGA,
+          quantity: quantity
+        });
+      }
+      
+      // Update tampilan keranjang
+      updateOrderSummary();
+    }
+
+    // Fungsi untuk memperbarui ringkasan pesanan
+    function updateOrderSummary() {
+      const orderItems = document.getElementById('order-items');
+      const subtotalElement = document.getElementById('subtotal');
+      const totalElement = document.getElementById('total');
+      const waLink = document.getElementById('wa-link');
+      
+      // Kosongkan dulu
+      orderItems.innerHTML = '';
+      
+      let subtotal = 0;
+      
+      // Tambahkan item yang dipesan
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        subtotal += itemTotal;
+        
+        const orderItem = document.createElement('div');
+        orderItem.className = 'order-item';
+        orderItem.innerHTML = `
+          <div class="order-item-name">${item.name}</div>
+          <div class="order-item-quantity">${item.quantity}</div>
+          <div class="order-item-price">Rp ${itemTotal.toLocaleString('id-ID')}</div>
+        `;
+        orderItems.appendChild(orderItem);
+      });
+      
+      // Hitung total
+      subtotalElement.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+      totalElement.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+      
+      // Update link WhatsApp
+      if (cart.length > 0) {
+        let message = `Halo, saya ingin memesan:\n\n`;
+        cart.forEach(item => {
+          message += `${item.name} (${item.quantity}x) - Rp ${(item.price * item.quantity).toLocaleString('id-ID')}\n`;
+        });
+        message += `\nTotal: Rp ${subtotal.toLocaleString('id-ID')}\n\nTerima kasih!`;
+        
+        // Ganti nomor WhatsApp berikut dengan nomor bisnis Anda
+        waLink.href = `https://wa.me/6285880428160?text=${encodeURIComponent(message)}`;
+        waLink.style.display = 'block';
+      } else {
+        waLink.style.display = 'none';
+      }
+    }
+
+    // Jalankan saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+      displayMenu();
+    });
+  </script>
+</body>
+</html>
