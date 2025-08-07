@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pincak Lamak - Rumah Makan Padang</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
   <style>
     * {
       margin: 0;
@@ -101,6 +102,7 @@
       width: 100%;
       border: 1px solid #ddd;
       border-radius: 4px;
+      background-color: #f8f8f8;
     }
 
     #tax-toggle {
@@ -142,6 +144,32 @@
       border: 1px solid #ddd;
       border-radius: 4px;
       font-family: 'Montserrat', sans-serif;
+    }
+
+    #mini-map {
+      height: 200px;
+      width: 100%;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background-color: #f8f8f8;
+    }
+
+    .leaflet-container {
+      background-color: #f8f8f8 !important;
+    }
+
+    .leaflet-marker-icon {
+      filter: hue-rotate(200deg) !important;
+    }
+
+    .distance-info {
+      margin-top: 5px;
+      font-size: 0.9rem;
+    }
+
+    .distance-info strong {
+      color: #d92323;
     }
 
     .menu-category h3 {
@@ -374,6 +402,23 @@
         font-size: 1.3rem;
         padding: 0.5rem 1.5rem;
       }
+
+      #mini-map {
+        height: 200px;
+        width: 100%;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+      }
+
+     .leaflet-container {
+        background-color: #f8f8f8 !important;
+      }
+
+     .distance-info {
+        margin-top: 5px;
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -398,7 +443,7 @@
       <div class="fee-section">
         <div class="form-group">
           <label for="delivery-fee">Ongkos Kirim (Rp)</label>
-          <input type="number" id="delivery-fee" name="delivery-fee" min="0" value="0">
+          <input type="number" id="delivery-fee" name="delivery-fee" min="0" value="0" readonly>
         </div>
         <div class="form-group">
           <label for="service-fee">Biaya Servis (Rp)</label>
@@ -430,6 +475,16 @@
             <textarea id="alamat" name="alamat" rows="2" required></textarea>
           </div>
           <div class="form-group">
+            <label for="lokasi">Pin Lokasi Anda:</label>
+            <div id="mini-map"></div>
+            <div class="distance-info">
+              <strong>Jarak:</strong> <span id="jarak-display">0 km</span>
+              <input type="hidden" id="jarak" name="jarak" value="0">
+              <input type="hidden" id="lokasi-lat" name="lokasi-lat">
+              <input type="hidden" id="lokasi-lng" name="lokasi-lng">
+            </div>
+          </div>
+          <div class="form-group">
             <label for="catatan">Catatan Tambahan</label>
             <textarea id="catatan" name="catatan" rows="2"></textarea>
           </div>
@@ -440,147 +495,99 @@
     </aside>
   </main>
 
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
   <script>
-    const menuData = {
-      "makanan": [
-        {
-          "NAMA MENU": "Nasi Putih",
-          "FOTO": "images/nasiputih.png",
-          "DESKRIPSI": "Butiran putih berkilau seperti embun pagi, nasi dari beras Solok memancarkan kesederhanaan yang memikat. Di setiap suapannya, tersimpan kelembutan tekstur pulen dan aroma harum alami—seperti napas sawah Minang yang masih segar. Bukan sekadar pendamping, ia adalah dasar sempurna yang merangkul setiap rempah dan bumbu, menghadirkan harmoni dalam kesederhanaan.",
-          "HARGA": 3000
-        },
-	{
-          "NAMA MENU": "Rendang",
-          "FOTO": "images/rendang.png",
-          "DESKRIPSI": "Rendang adalah mahakarya kuliner Minangkabau yang dimasak dengan penuh kesabaran hingga bumbu meresap sempurna ke dalam daging. Terbuat dari daging sapi pilihan yang lembut dan padat, rendang dimasak perlahan bersama santan dan rempah-rempah khas hingga menghasilkan warna cokelat gelap yang menggoda. Setiap suapan menghadirkan harmoni rasa gurih, pedas, dan manis yang mendalam—bukan sekadar hidangan, tapi pengalaman rasa yang menghangatkan jiwa.",
-          "HARGA": 20000
-        },
-        {
-          "NAMA MENU": "Udang Balado",
-          "FOTO": "images/udang.png",
-          "DESKRIPSI": "Udang balado khas Padang adalah perpaduan sempurna antara kelezatan laut dan ledakan rasa dari sambal merah Minang yang khas. Udang segar dimasak dengan bumbu balado yang kaya akan cabai, bawang merah, dan tomat, menciptakan warna merah menyala yang memikat mata. Setiap udang terbalut sempurna oleh sambal pedas-gurih yang meresap hingga ke dalam, menghasilkan cita rasa yang kuat namun seimbang. Disajikan hangat dengan nasi putih pulen, udang balado menghadirkan keindahan dan kekayaan rasa dalam satu sajian estetik yang menggugah selera.",
-          "HARGA": 20000
-        },
-        {
-          "NAMA MENU": "Cumi",
-          "FOTO": "images/cumi.png",
-          "DESKRIPSI": "Gulai Cumi khas Padang adalah sajian laut yang kaya rasa dan tampil memikat dalam balutan kuah santan kental berwarna kuning keemasan. Cumi segar, yang kadang diisi dengan telur atau tahu, dimasak bersama rempah khas Minang seperti kunyit, jahe, dan serai, menghasilkan aroma harum yang menggoda. Teksturnya yang kenyal berpadu dengan gurih pedasnya kuah gulai menciptakan sensasi rasa yang kompleks namun harmonis. Disajikan dengan tampilan sederhana namun elegan, gulai cumi ini mencerminkan keindahan dan kekayaan kuliner Minang dalam satu piring yang estetik.",
-          "HARGA": 20000
-        },
-        {
-          "NAMA MENU": "Dendeng Batokok",
-          "FOTO": "images/dendengbatokok.png",
-          "DESKRIPSI": "Dendeng Batokok khas Padang adalah sajian daging sapi yang tipis, dipukul-pukul hingga pipih, lalu digoreng kering dan disiram sambal cabai hijau segar yang menggoda. Perpaduan warna daging kecokelatan dengan sambal lado mudo yang terang menciptakan tampilan yang estetik dan menggugah selera. Tekstur dendeng yang renyah di luar namun tetap empuk di dalam berpadu sempurna dengan rasa pedas, gurih, dan sedikit asam dari sambal khas Minang. Sajian ini bukan hanya kaya rasa, tapi juga mencerminkan keunikan teknik memasak dan kekayaan kuliner Ranah Minang.",
-          "HARGA": 20000
-        },
-        {
-          "NAMA MENU": "Kalio",
-          "FOTO": "images/kalio.png",
-          "DESKRIPSI": "Kalio adalah sajian khas Minang yang menggoda, terbuat dari potongan daging yang dimasak perlahan dalam kuah santan kental berwarna cokelat keemasan. Kaya akan rempah-rempah seperti lengkuas, kunyit, dan daun jeruk, kalio menghadirkan aroma harum dan rasa gurih manis yang menyatu sempurna. Teksturnya lembut meresap hingga ke serat daging, menciptakan pengalaman makan yang dalam dan autentik khas ranah Minang.",
-          "HARGA": 20000
-        },
-        {
-          "NAMA MENU": "Ayam Bakar",
-          "FOTO": "images/ayambakar.png",
-          "DESKRIPSI": "Ayam bakar khas Padang adalah sajian penuh pesona yang memadukan keharuman bumbu rempah dengan aroma asap pembakaran yang menggoda. Terbuat dari potongan ayam pilihan yang telah dimarinasi dalam bumbu khas Minang seperti serai, lengkuas, kunyit, dan cabai, lalu dibakar hingga permukaannya kecokelatan dan karamelisasi bumbu menempel sempurna. Setiap gigitan menghadirkan perpaduan rasa gurih, manis, dan pedas yang membalut daging ayam yang empuk—mewakili kehangatan dan kekayaan rasa Nusantara dalam satu piring estetik nan menggugah selera.",
-          "HARGA": 16000
-        },
-        {
-          "NAMA MENU": "Ayam Pop",
-          "FOTO": "images/ayampop.png",
-          "DESKRIPSI": "Ayam Pop khas Padang adalah sajian istimewa yang memikat dengan kesederhanaannya yang elegan. Terbuat dari potongan ayam kampung pilihan yang direbus dalam air kelapa dan rempah-rempah ringan, ayam ini memiliki warna pucat alami namun menyimpan cita rasa gurih yang lembut di setiap serat dagingnya. Disajikan dengan sambal merah khas Minang yang pedas segar dan nasi hangat, Ayam Pop menyuguhkan kontras rasa yang harmonis—menjadikannya simbol kelezatan Padang yang tenang namun berkarakter.",
-          "HARGA": 16000
-        },
-        {
-          "NAMA MENU": "Ikan Patin",
-          "FOTO": "images/gulaiikan.png",
-          "DESKRIPSI": "Gulai Ikan Patin khas Padang adalah sajian berkuah santan yang kaya rasa dan memikat secara visual. Ikan patin segar dimasak perlahan dalam kuah kuning keemasan yang kental, berpadu dengan rempah-rempah khas seperti kunyit, lengkuas, dan daun ruku-ruku yang harum. Tekstur ikan yang lembut menyatu sempurna dengan kuah gulai yang gurih, pedas, dan sedikit asam, menciptakan harmoni rasa yang mendalam. Disajikan dalam mangkuk sederhana namun penuh warna, gulai ini memancarkan kehangatan masakan rumah dengan sentuhan estetika khas Minang.",
-          "HARGA": 16000
-        },
-        {
-          "NAMA MENU": "Ikan Balado",
-          "FOTO": "images/ikanbalado.png",
-          "DESKRIPSI": "Ikan Balado khas Padang adalah sajian menggoda yang memadukan renyahnya ikan goreng dengan sambal balado merah menyala yang kaya rasa. Ikan segar digoreng hingga kulitnya garing keemasan, lalu dilumuri sambal yang terbuat dari cabai merah, bawang, dan tomat, menciptakan aroma pedas yang menggugah selera. Warna kontras antara merah menyala sambal dan keemasan ikan menciptakan tampilan yang estetik, sementara perpaduan rasa gurih, pedas, dan sedikit manis menghadirkan sensasi kuliner khas Minang yang kuat dan memanjakan lidah.",
-          "HARGA": 16000
-        },
-        {
-          "NAMA MENU": "Hati",
-          "FOTO": "images/hatisapi.png",
-          "DESKRIPSI": "Gulai Hati Sapi khas Padang adalah sajian kaya rempah yang menghadirkan kelezatan dalam setiap suapan. Potongan hati sapi yang empuk dimasak dalam kuah santan kental berwarna kuning keemasan, diperkaya dengan bumbu khas Minang seperti kunyit, lengkuas, dan serai. Aroma harum yang menggoda berpadu dengan tekstur lembut hati sapi, menciptakan rasa gurih dan pedas yang menyatu sempurna. Disajikan dalam tampilan sederhana namun berkelas, gulai ini mencerminkan kehangatan dan kekayaan rasa khas masakan Padang yang estetik dan menggugah selera.",
-          "HARGA": 16000
-        },
-        {
-          "NAMA MENU": "Usus",
-          "FOTO": "images/usus.png",
-          "DESKRIPSI": "Gulai Usus khas Padang adalah sajian unik dan menggoda yang memadukan tekstur kenyal usus sapi dengan kuah santan kental berwarna kuning keemasan yang kaya rempah. Usus dibersihkan dengan teliti, lalu dimasak perlahan bersama bumbu khas Minang seperti kunyit, jahe, dan serai hingga meresap sempurna. Aroma harum rempah menyatu dengan gurihnya santan menciptakan cita rasa yang dalam dan menggugah selera. Disajikan dengan tampilan hangat dan sederhana, gulai usus menghadirkan keindahan kuliner Padang yang autentik dalam sajian yang estetik dan kaya rasa.",
-          "HARGA": 16000
-        },
-        {
-          "NAMA MENU": "Paru Goreng",
-          "FOTO": "images/parugoreng.png",
-          "DESKRIPSI": "Paru Goreng khas Padang adalah sajian lezat dengan tampilan yang menggoda dan cita rasa yang khas. Paru sapi direbus bersama rempah pilihan, kemudian digoreng hingga kering dan renyah di luar, namun tetap empuk di dalam. Warna cokelat keemasan dan tekstur berpori yang unik menciptakan kesan estetik yang kuat di atas piring, apalagi bila dipadukan dengan taburan bawang goreng atau sambal lado. Setiap gigitan menyajikan perpaduan rasa gurih, aromatik, dan sedikit pedas yang mencerminkan kelezatan khas Minang yang autentik dan tak terlupakan.",
-          "HARGA": 16000
-        },
-        {
-          "NAMA MENU": "Telur Dadar",
-          "FOTO": "images/telurdadar.png",
-          "DESKRIPSI": "Telur Dadar khas Padang adalah sajian sederhana yang tampil memikat dengan tekstur tebal, warna keemasan, dan aroma harum rempah yang menggoda. Terbuat dari telur yang dikocok bersama daun bawang, cabai, bawang merah, dan sedikit kelapa parut atau tepung, kemudian digoreng hingga bagian luar garing sementara bagian dalam tetap lembut dan berbumbu. Potongannya yang besar dan berlapis menciptakan tampilan estetik nan menggugah di atas piring nasi Padang. Telur dadar ini bukan sekadar lauk, tapi simbol kelezatan rumahan khas Minang yang selalu dirindukan.",
-          "HARGA": 10000
-        },
-        {
-          "NAMA MENU": "Ikan Goreng",
-          "FOTO": "images/ikangoreng.png",
-          "DESKRIPSI": "Ikan Goreng khas Padang adalah sajian sederhana namun menggoda, dengan tampilan keemasan yang renyah di luar dan daging ikan yang lembut di dalam. Ikan segar dibumbui dengan rempah khas Minang seperti bawang putih, kunyit, dan garam, lalu digoreng hingga matang sempurna dan harum menggoda. Disajikan hangat dengan sambal lado dan nasi putih, ikan goreng ini tampak estetik dalam kesederhanaannya, memancarkan cita rasa tradisional yang gurih, renyah, dan selalu dirindukan dalam setiap suapan.",
-          "HARGA": 10000
-        },
-        {
-          "NAMA MENU": "Sayur Nangka",
-          "FOTO": "images/sayurnangka.png",
-          "DESKRIPSI": "Sayur Nangka khas Padang adalah sajian berkuah santan yang menghadirkan kehangatan dan kekayaan rasa dalam balutan warna kuning keemasan yang menggoda. Potongan nangka muda dimasak bersama santan dan rempah-rempah khas Minang seperti kunyit, lengkuas, dan daun salam, menciptakan aroma harum yang khas dan menggugah selera. Tekstur nangka yang lembut berpadu sempurna dengan kuah gurih yang kaya rasa. Disajikan hangat sebagai pelengkap nasi Padang, sayur ini tampak estetik dengan kesederhanaan tampilannya namun menyimpan cita rasa yang mendalam dan memanjakan lidah.",
-          "HARGA": 5000
-        },
-        {
-          "NAMA MENU": "Perkedel",
-          "FOTO": "images/perkedel.png",
-          "DESKRIPSI": "Perkedel khas Padang adalah camilan pelengkap yang sederhana namun penuh pesona rasa dan tampilan yang menggugah selera. Terbuat dari kentang yang digoreng, dihaluskan, lalu dicampur dengan bawang, daun seledri, dan bumbu khas, kemudian digoreng hingga berwarna keemasan dengan permukaan renyah dan bagian dalam yang lembut. Bentuknya yang bulat pipih dengan warna cokelat keemasan menciptakan kesan estetik yang hangat di atas piring nasi Padang. Perkedel ini bukan sekadar pelengkap, tapi penyeimbang rasa yang sempurna dalam setiap sajian Minang.",
-          "HARGA": 5000
-        }
-      ],
-      "minuman": [
-    {
-      "NAMA MENU": "Es Jeruk",
-      "FOTO": "images/esjeruk.png",
-      "DESKRIPSI": "Es Jeruk adalah minuman segar yang memikat dengan warna oranye cerah alami dan tampilan bening yang menggoda. Terbuat dari perasan jeruk segar yang manis-asam, disajikan dengan es batu yang mempercantik tampilannya dalam gelas tinggi berembun. Aroma citrus yang harum berpadu dengan sensasi dingin yang menyegarkan, menjadikan es jeruk sebagai pelengkap sempurna di tengah hidangan lezat. Kesederhanaannya menghadirkan kesan estetik yang menyenangkan, sekaligus menyegarkan tubuh dan pikiran dalam setiap tegukan.",
-      "HARGA": 5000
-    },
-    {
-      "NAMA MENU": "Es Teh",
-      "FOTO": "images/esteh.png",
-      "DESKRIPSI": "Es Teh adalah minuman klasik yang tampil elegan dengan warna cokelat keemasan yang jernih dan menggoda. Disajikan dalam gelas tinggi berisi es batu yang berkilau, es teh memancarkan kesegaran yang menenangkan sejak pandangan pertama. Aroma teh yang ringan berpadu dengan rasa manis seimbang, menjadikannya pelengkap sempurna untuk segala jenis hidangan. Tampilan sederhananya justru menghadirkan kesan estetik yang bersih dan menyegarkan, menjadikan setiap tegukan es teh sebagai jeda yang menyejukkan di tengah hangatnya sajian.",
-      "HARGA": 5000
-    },
-    {
-      "NAMA MENU": "Jeruk Hangat",
-      "FOTO": "images/jerukhangat.png",
-      "DESKRIPSI": "Jeruk hangat adalah minuman menyehatkan yang tampil cantik dalam kesederhanaannya, dengan warna oranye cerah yang hangat dan aroma citrus yang segar. Disajikan dalam gelas bening atau cangkir sederhana, uap lembut yang mengepul dari permukaannya menciptakan kesan estetik yang menenangkan. Perasan jeruk segar yang hangat ini menghadirkan perpaduan rasa manis dan asam yang lembut, memberikan kehangatan alami sekaligus menyegarkan tubuh. Jeruk hangat bukan hanya minuman penghangat, tapi juga simbol kesegaran yang menenangkan dalam tampilan yang sederhana namun memesona.",
-      "HARGA": 5000
-    },
-    {
-      "NAMA MENU": "Teh Hangat",
-      "FOTO": "images/tehhangat.png",
-      "DESKRIPSI": "Teh hangat adalah sajian minuman yang sederhana namun penuh kehangatan dan estetika alami. Disajikan dalam cangkir atau gelas bening, warna cokelat keemasan teh yang mengepul lembut menciptakan suasana tenang dan nyaman. Aroma khas daun teh yang harum menguar perlahan, menghadirkan sensasi relaksasi sebelum bahkan diseruput. Dengan rasa yang lembut dan menenangkan, teh hangat menjadi pelengkap sempurna di tengah hidangan atau sebagai penutup yang hangat setelah santapan lezat, menciptakan pengalaman minum yang estetik dan penuh kedamaian.",
-      "HARGA": 5000
-    },
-    {
-      "NAMA MENU": "Teh Tawar Hangat",
-      "FOTO": "images/tehtawar.png",
-      "DESKRIPSI": "Teh tawar hangat adalah minuman yang merepresentasikan kesederhanaan dengan pesona alami yang menenangkan. Disajikan dalam cangkir bening atau keramik sederhana, warna cokelat keemasan dari teh yang mengepul lembut menghadirkan nuansa hangat dan estetik. Tanpa tambahan gula, rasa murni daun teh terasa lembut di lidah, memberikan ketenangan sekaligus kesegaran yang halus. Aroma teh yang ringan namun khas memperkaya pengalaman minum, menjadikan teh tawar hangat sebagai pelengkap sempurna dalam setiap waktu istirahat atau setelah menikmati hidangan yang kaya rasa.",
-      "HARGA": 3000
-    }
-   ]
-    };
-
     let cart = [];
+  // Koordinat rumah makan (sesuaikan dengan lokasi sebenarnya)
+  const RESTAURANT_LOCATION = {
+    lat: -6.3284352,
+    lng: 106.6714169,
+    name: "Pincak Lamak"
+  };
+ 
+  let map, userMarker;
+
+  // Fungsi inisialisasi peta
+  function initMap() {
+  map = L.map('mini-map').setView([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng], 14);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+  // Marker restoran
+  L.marker([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng])
+    .addTo(map)
+    .bindPopup(`<b>${RESTAURANT_LOCATION.name}</b>`)
+    .openPopup();
+
+  // Marker pengguna (bisa digeser)
+  userMarker = L.marker([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng], {
+    draggable: true
+  }).addTo(map);
+
+  // Cari lokasi pengguna otomatis
+  locateUser();
+
+  // Event saat marker digeser
+  userMarker.on('dragend', function(e) {
+    updateLocation(userMarker.getLatLng());
+  });
+}
+
+// Fungsi deteksi lokasi pengguna
+function locateUser() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLoc = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        userMarker.setLatLng(userLoc);
+        map.setView(userLoc, 15);
+        updateLocation(userLoc);
+      },
+      (error) => {
+        console.log("Pengguna menolak akses lokasi");
+        updateLocation(RESTAURANT_LOCATION);
+      }
+    );
+  }
+}
+
+// Fungsi update lokasi
+function updateLocation(pos) {
+  document.getElementById('lokasi-lat').value = pos.lat;
+  document.getElementById('lokasi-lng').value = pos.lng;
+  calculateDistance(pos);
+}
+
+// Fungsi hitung jarak
+function calculateDistance(userPos) {
+  const R = 6371; // Radius bumi dalam km
+  const dLat = (userPos.lat - RESTAURANT_LOCATION.lat) * Math.PI / 180;
+  const dLon = (userPos.lng - RESTAURANT_LOCATION.lng) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(RESTAURANT_LOCATION.lat * Math.PI / 180) * 
+    Math.cos(userPos.lat * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c;
+  
+  const roundedDistance = Math.round(distance * 10) / 10;
+  document.getElementById('jarak-display').textContent = `${roundedDistance} km`;
+  document.getElementById('jarak').value = roundedDistance;
+  
+  // Hitung ongkir (0-2km gratis, +Rp5.000/km setelahnya)
+  const deliveryFee = roundedDistance <= 2 ? 0 : Math.round((roundedDistance - 2) * 5000);
+  document.getElementById('delivery-fee').value = deliveryFee;
+  
+  updateOrderSummary();
+}
+
+    function toRad(degrees) {
+      return degrees * Math.PI / 180;
+    }
 
     function displayMenu() {
       const menuList = document.getElementById('menu-list');
@@ -760,11 +767,16 @@
         const telepon = customerForm.telepon.value;
         const alamat = customerForm.alamat.value;
         const catatan = customerForm.catatan.value;
+        const jarak = document.getElementById('jarak').value;
+        const lokasiLat = document.getElementById('lokasi-lat').value;
+        const lokasiLng = document.getElementById('lokasi-lng').value;
         
         let message = `Halo, saya ingin memesan:\n\n`;
         message += `*Nama:* ${nama}\n`;
         message += `*No. Telepon:* ${telepon}\n`;
-        message += `*Alamat:* ${alamat}\n\n`;
+        message += `*Alamat:* ${alamat}\n`;
+        message += `*Lokasi:* https://maps.google.com/?q=${lokasiLat},${lokasiLng}\n`;
+        message += `*Jarak dari restoran:* ${jarak} km\n\n`;
         
         message += `*Detail Pesanan:*\n`;
         cart.forEach(item => {
@@ -778,7 +790,7 @@
         message += `*Total:* Rp ${total.toLocaleString('id-ID')}\n`;
         
         if (catatan) message += `\n*Catatan:* ${catatan}\n`;
-        message += `\nTerima kasih!`; // Pesan terima kasih ditambahkan
+        message += `\nTerima kasih!`;
         
         waLink.href = `https://wa.me/6285880428160?text=${encodeURIComponent(message)}`;
         waLink.style.display = 'block';
@@ -787,9 +799,150 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    // Data menu (sama seperti sebelumnya)
+    
+    const menuData = {
+      "makanan": [
+        {
+          "NAMA MENU": "Nasi Putih",
+          "FOTO": "images/nasiputih.png",
+          "DESKRIPSI": "Butiran putih berkilau seperti embun pagi, nasi dari beras Solok memancarkan kesederhanaan yang memikat. Di setiap suapannya, tersimpan kelembutan tekstur pulen dan aroma harum alami—seperti napas sawah Minang yang masih segar. Bukan sekadar pendamping, ia adalah dasar sempurna yang merangkul setiap rempah dan bumbu, menghadirkan harmoni dalam kesederhanaan.",
+          "HARGA": 3000
+        },
+	{
+          "NAMA MENU": "Rendang",
+          "FOTO": "images/rendang.png",
+          "DESKRIPSI": "Rendang adalah mahakarya kuliner Minangkabau yang dimasak dengan penuh kesabaran hingga bumbu meresap sempurna ke dalam daging. Terbuat dari daging sapi pilihan yang lembut dan padat, rendang dimasak perlahan bersama santan dan rempah-rempah khas hingga menghasilkan warna cokelat gelap yang menggoda. Setiap suapan menghadirkan harmoni rasa gurih, pedas, dan manis yang mendalam—bukan sekadar hidangan, tapi pengalaman rasa yang menghangatkan jiwa.",
+          "HARGA": 20000
+        },
+        {
+          "NAMA MENU": "Udang Balado",
+          "FOTO": "images/udang.png",
+          "DESKRIPSI": "Udang balado khas Padang adalah perpaduan sempurna antara kelezatan laut dan ledakan rasa dari sambal merah Minang yang khas. Udang segar dimasak dengan bumbu balado yang kaya akan cabai, bawang merah, dan tomat, menciptakan warna merah menyala yang memikat mata. Setiap udang terbalut sempurna oleh sambal pedas-gurih yang meresap hingga ke dalam, menghasilkan cita rasa yang kuat namun seimbang. Disajikan hangat dengan nasi putih pulen, udang balado menghadirkan keindahan dan kekayaan rasa dalam satu sajian estetik yang menggugah selera.",
+          "HARGA": 20000
+        },
+        {
+          "NAMA MENU": "Cumi",
+          "FOTO": "images/cumi.png",
+          "DESKRIPSI": "Gulai Cumi khas Padang adalah sajian laut yang kaya rasa dan tampil memikat dalam balutan kuah santan kental berwarna kuning keemasan. Cumi segar, yang kadang diisi dengan telur atau tahu, dimasak bersama rempah khas Minang seperti kunyit, jahe, dan serai, menghasilkan aroma harum yang menggoda. Teksturnya yang kenyal berpadu dengan gurih pedasnya kuah gulai menciptakan sensasi rasa yang kompleks namun harmonis. Disajikan dengan tampilan sederhana namun elegan, gulai cumi ini mencerminkan keindahan dan kekayaan kuliner Minang dalam satu piring yang estetik.",
+          "HARGA": 20000
+        },
+        {
+          "NAMA MENU": "Dendeng Batokok",
+          "FOTO": "images/dendengbatokok.png",
+          "DESKRIPSI": "Dendeng Batokok khas Padang adalah sajian daging sapi yang tipis, dipukul-pukul hingga pipih, lalu digoreng kering dan disiram sambal cabai hijau segar yang menggoda. Perpaduan warna daging kecokelatan dengan sambal lado mudo yang terang menciptakan tampilan yang estetik dan menggugah selera. Tekstur dendeng yang renyah di luar namun tetap empuk di dalam berpadu sempurna dengan rasa pedas, gurih, dan sedikit asam dari sambal khas Minang. Sajian ini bukan hanya kaya rasa, tapi juga mencerminkan keunikan teknik memasak dan kekayaan kuliner Ranah Minang.",
+          "HARGA": 20000
+        },
+        {
+          "NAMA MENU": "Kalio",
+          "FOTO": "images/kalio.png",
+          "DESKRIPSI": "Kalio adalah sajian khas Minang yang menggoda, terbuat dari potongan daging yang dimasak perlahan dalam kuah santan kental berwarna cokelat keemasan. Kaya akan rempah-rempah seperti lengkuas, kunyit, dan daun jeruk, kalio menghadirkan aroma harum dan rasa gurih manis yang menyatu sempurna. Teksturnya lembut meresap hingga ke serat daging, menciptakan pengalaman makan yang dalam dan autentik khas ranah Minang.",
+          "HARGA": 20000
+        },
+        {
+          "NAMA MENU": "Ayam Bakar",
+          "FOTO": "images/ayambakar.png",
+          "DESKRIPSI": "Ayam bakar khas Padang adalah sajian penuh pesona yang memadukan keharuman bumbu rempah dengan aroma asap pembakaran yang menggoda. Terbuat dari potongan ayam pilihan yang telah dimarinasi dalam bumbu khas Minang seperti serai, lengkuas, kunyit, dan cabai, lalu dibakar hingga permukaannya kecokelatan dan karamelisasi bumbu menempel sempurna. Setiap gigitan menghadirkan perpaduan rasa gurih, manis, dan pedas yang membalut daging ayam yang empuk—mewakili kehangatan dan kekayaan rasa Nusantara dalam satu piring estetik nan menggugah selera.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Ayam Pop",
+          "FOTO": "images/ayampop.png",
+          "DESKRIPSI": "Ayam Pop khas Padang adalah sajian istimewa yang memikat dengan kesederhanaannya yang elegan. Terbuat dari potongan ayam kampung pilihan yang direbus dalam air kelapa dan rempah-rempah ringan, ayam ini memiliki warna pucat alami namun menyimpan cita rasa gurih yang lembut di setiap serat dagingnya. Disajikan dengan sambal merah khas Minang yang pedas segar dan nasi hangat, Ayam Pop menyuguhkan kontras rasa yang harmonis—menjadikannya simbol kelezatan Padang yang tenang namun berkarakter.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Ikan Patin",
+          "FOTO": "images/gulaiikan.png",
+          "DESKRIPSI": "Gulai Ikan Patin khas Padang adalah sajian berkuah santan yang kaya rasa dan memikat secara visual. Ikan patin segar dimasak perlahan dalam kuah kuning keemasan yang kental, berpadu dengan rempah-rempah khas seperti kunyit, lengkuas, dan daun ruku-ruku yang harum. Tekstur ikan yang lembut menyatu sempurna dengan kuah gulai yang gurih, pedas, dan sedikit asam, menciptakan harmoni rasa yang mendalam. Disajikan dalam mangkuk sederhana namun penuh warna, gulai ini memancarkan kehangatan masakan rumah dengan sentuhan estetika khas Minang.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Ikan Balado",
+          "FOTO": "images/ikanbalado.png",
+          "DESKRIPSI": "Ikan Balado khas Padang adalah sajian menggoda yang memadukan renyahnya ikan goreng dengan sambal balado merah menyala yang kaya rasa. Ikan segar digoreng hingga kulitnya garing keemasan, lalu dilumuri sambal yang terbuat dari cabai merah, bawang, dan tomat, menciptakan aroma pedas yang menggugah selera. Warna kontras antara merah menyala sambal dan keemasan ikan menciptakan tampilan yang estetik, sementara perpaduan rasa gurih, pedas, dan sedikit manis menghadirkan sensasi kuliner khas Minang yang kuat dan memanjakan lidah.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Hati",
+          "FOTO": "images/hatisapi.png",
+          "DESKRIPSI": "Gulai Hati Sapi khas Padang adalah sajian kaya rempah yang menghadirkan kelezatan dalam setiap suapan. Potongan hati sapi yang empuk dimasak dalam kuah santan kental berwarna kuning keemasan, diperkaya dengan bumbu khas Minang seperti kunyit, lengkuas, dan serai. Aroma harum yang menggoda berpadu dengan tekstur lembut hati sapi, menciptakan rasa gurih dan pedas yang menyatu sempurna. Disajikan dalam tampilan sederhana namun berkelas, gulai ini mencerminkan kehangatan dan kekayaan rasa khas masakan Padang yang estetik dan menggugah selera.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Usus",
+          "FOTO": "images/usus.png",
+          "DESKRIPSI": "Gulai Usus khas Padang adalah sajian unik dan menggoda yang memadukan tekstur kenyal usus sapi dengan kuah santan kental berwarna kuning keemasan yang kaya rempah. Usus dibersihkan dengan teliti, lalu dimasak perlahan bersama bumbu khas Minang seperti kunyit, jahe, dan serai hingga meresap sempurna. Aroma harum rempah menyatu dengan gurihnya santan menciptakan cita rasa yang dalam dan menggugah selera. Disajikan dengan tampilan hangat dan sederhana, gulai usus menghadirkan keindahan kuliner Padang yang autentik dalam sajian yang estetik dan kaya rasa.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Paru Goreng",
+          "FOTO": "images/parugoreng.png",
+          "DESKRIPSI": "Paru Goreng khas Padang adalah sajian lezat dengan tampilan yang menggoda dan cita rasa yang khas. Paru sapi direbus bersama rempah pilihan, kemudian digoreng hingga kering dan renyah di luar, namun tetap empuk di dalam. Warna cokelat keemasan dan tekstur berpori yang unik menciptakan kesan estetik yang kuat di atas piring, apalagi bila dipadukan dengan taburan bawang goreng atau sambal lado. Setiap gigitan menyajikan perpaduan rasa gurih, aromatik, dan sedikit pedas yang mencerminkan kelezatan khas Minang yang autentik dan tak terlupakan.",
+          "HARGA": 16000
+        },
+        {
+          "NAMA MENU": "Telur Dadar",
+          "FOTO": "images/telurdadar.png",
+          "DESKRIPSI": "Telur Dadar khas Padang adalah sajian sederhana yang tampil memikat dengan tekstur tebal, warna keemasan, dan aroma harum rempah yang menggoda. Terbuat dari telur yang dikocok bersama daun bawang, cabai, bawang merah, dan sedikit kelapa parut atau tepung, kemudian digoreng hingga bagian luar garing sementara bagian dalam tetap lembut dan berbumbu. Potongannya yang besar dan berlapis menciptakan tampilan estetik nan menggugah di atas piring nasi Padang. Telur dadar ini bukan sekadar lauk, tapi simbol kelezatan rumahan khas Minang yang selalu dirindukan.",
+          "HARGA": 10000
+        },
+        {
+          "NAMA MENU": "Ikan Goreng",
+          "FOTO": "images/ikangoreng.png",
+          "DESKRIPSI": "Ikan Goreng khas Padang adalah sajian sederhana namun menggoda, dengan tampilan keemasan yang renyah di luar dan daging ikan yang lembut di dalam. Ikan segar dibumbui dengan rempah khas Minang seperti bawang putih, kunyit, dan garam, lalu digoreng hingga matang sempurna dan harum menggoda. Disajikan hangat dengan sambal lado dan nasi putih, ikan goreng ini tampak estetik dalam kesederhanaannya, memancarkan cita rasa tradisional yang gurih, renyah, dan selalu dirindukan dalam setiap suapan.",
+          "HARGA": 10000
+        },
+        {
+          "NAMA MENU": "Sayur Nangka",
+          "FOTO": "images/sayurnangka.png",
+          "DESKRIPSI": "Sayur Nangka khas Padang adalah sajian berkuah santan yang menghadirkan kehangatan dan kekayaan rasa dalam balutan warna kuning keemasan yang menggoda. Potongan nangka muda dimasak bersama santan dan rempah-rempah khas Minang seperti kunyit, lengkuas, dan daun salam, menciptakan aroma harum yang khas dan menggugah selera. Tekstur nangka yang lembut berpadu sempurna dengan kuah gurih yang kaya rasa. Disajikan hangat sebagai pelengkap nasi Padang, sayur ini tampak estetik dengan kesederhanaan tampilannya namun menyimpan cita rasa yang mendalam dan memanjakan lidah.",
+          "HARGA": 5000
+        },
+        {
+          "NAMA MENU": "Perkedel",
+          "FOTO": "images/perkedel.png",
+          "DESKRIPSI": "Perkedel khas Padang adalah camilan pelengkap yang sederhana namun penuh pesona rasa dan tampilan yang menggugah selera. Terbuat dari kentang yang digoreng, dihaluskan, lalu dicampur dengan bawang, daun seledri, dan bumbu khas, kemudian digoreng hingga berwarna keemasan dengan permukaan renyah dan bagian dalam yang lembut. Bentuknya yang bulat pipih dengan warna cokelat keemasan menciptakan kesan estetik yang hangat di atas piring nasi Padang. Perkedel ini bukan sekadar pelengkap, tapi penyeimbang rasa yang sempurna dalam setiap sajian Minang.",
+          "HARGA": 5000
+        }
+      ],
+	"minuman": [
+    {
+      "NAMA MENU": "Es Jeruk",
+      "FOTO": "images/esjeruk.png",
+      "DESKRIPSI": "Es Jeruk adalah minuman segar yang memikat dengan warna oranye cerah alami dan tampilan bening yang menggoda. Terbuat dari perasan jeruk segar yang manis-asam, disajikan dengan es batu yang mempercantik tampilannya dalam gelas tinggi berembun. Aroma citrus yang harum berpadu dengan sensasi dingin yang menyegarkan, menjadikan es jeruk sebagai pelengkap sempurna di tengah hidangan lezat. Kesederhanaannya menghadirkan kesan estetik yang menyenangkan, sekaligus menyegarkan tubuh dan pikiran dalam setiap tegukan.",
+      "HARGA": 5000
+    },
+    {
+      "NAMA MENU": "Es Teh",
+      "FOTO": "images/esteh.png",
+      "DESKRIPSI": "Es Teh adalah minuman klasik yang tampil elegan dengan warna cokelat keemasan yang jernih dan menggoda. Disajikan dalam gelas tinggi berisi es batu yang berkilau, es teh memancarkan kesegaran yang menenangkan sejak pandangan pertama. Aroma teh yang ringan berpadu dengan rasa manis seimbang, menjadikannya pelengkap sempurna untuk segala jenis hidangan. Tampilan sederhananya justru menghadirkan kesan estetik yang bersih dan menyegarkan, menjadikan setiap tegukan es teh sebagai jeda yang menyejukkan di tengah hangatnya sajian.",
+      "HARGA": 5000
+    },
+    {
+      "NAMA MENU": "Jeruk Hangat",
+      "FOTO": "images/jerukhangat.png",
+      "DESKRIPSI": "Jeruk hangat adalah minuman menyehatkan yang tampil cantik dalam kesederhanaannya, dengan warna oranye cerah yang hangat dan aroma citrus yang segar. Disajikan dalam gelas bening atau cangkir sederhana, uap lembut yang mengepul dari permukaannya menciptakan kesan estetik yang menenangkan. Perasan jeruk segar yang hangat ini menghadirkan perpaduan rasa manis dan asam yang lembut, memberikan kehangatan alami sekaligus menyegarkan tubuh. Jeruk hangat bukan hanya minuman penghangat, tapi juga simbol kesegaran yang menenangkan dalam tampilan yang sederhana namun memesona.",
+      "HARGA": 5000
+    },
+    {
+      "NAMA MENU": "Teh Hangat",
+      "FOTO": "images/tehhangat.png",
+      "DESKRIPSI": "Teh hangat adalah sajian minuman yang sederhana namun penuh kehangatan dan estetika alami. Disajikan dalam cangkir atau gelas bening, warna cokelat keemasan teh yang mengepul lembut menciptakan suasana tenang dan nyaman. Aroma khas daun teh yang harum menguar perlahan, menghadirkan sensasi relaksasi sebelum bahkan diseruput. Dengan rasa yang lembut dan menenangkan, teh hangat menjadi pelengkap sempurna di tengah hidangan atau sebagai penutup yang hangat setelah santapan lezat, menciptakan pengalaman minum yang estetik dan penuh kedamaian.",
+      "HARGA": 5000
+    },
+    {
+      "NAMA MENU": "Teh Tawar Hangat",
+      "FOTO": "images/tehtawar.png",
+      "DESKRIPSI": "Teh tawar hangat adalah minuman yang merepresentasikan kesederhanaan dengan pesona alami yang menenangkan. Disajikan dalam cangkir bening atau keramik sederhana, warna cokelat keemasan dari teh yang mengepul lembut menghadirkan nuansa hangat dan estetik. Tanpa tambahan gula, rasa murni daun teh terasa lembut di lidah, memberikan ketenangan sekaligus kesegaran yang halus. Aroma teh yang ringan namun khas memperkaya pengalaman minum, menjadikan teh tawar hangat sebagai pelengkap sempurna dalam setiap waktu istirahat atau setelah menikmati hidangan yang kaya rasa.",
+      "HARGA": 3000
+    }
+   ]
+    };
+    
+      document.addEventListener('DOMContentLoaded', () => {
       displayMenu();
-      document.getElementById('delivery-fee').addEventListener('input', updateOrderSummary);
+      initMap();
       document.getElementById('service-fee').addEventListener('input', updateOrderSummary);
       document.getElementById('tax-toggle').addEventListener('change', updateOrderSummary);
       document.getElementById('customer-form').addEventListener('input', updateOrderSummary);
