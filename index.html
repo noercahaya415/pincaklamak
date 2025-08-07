@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pincak Lamak - Rumah Makan Padang</title>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
@@ -20,7 +19,6 @@
       line-height: 1.6;
     }
 
-    /* ========== HEADER ========== */
     header {
       background: linear-gradient(135deg, #d92323 0%, #a31c1c 100%);
       color: white;
@@ -42,21 +40,6 @@
       filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
     }
 
-    .banner-logo {
-     width: 500px; /* Ganti dengan ukuran ideal */
-     height: auto; /* Pertahankan aspect ratio */
-    }
-
-    .tagline {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      margin: 0.5rem 0 1.5rem;
-      color: #fff8e1;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-    }
-
     .delivery-text {
       font-family: 'Montserrat', sans-serif;
       font-size: 2rem;
@@ -72,7 +55,6 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
-    /* ========== MAIN CONTENT ========== */
     main {
       display: flex;
       flex-wrap: wrap;
@@ -95,14 +77,43 @@
       position: sticky;
       top: 2rem;
       height: fit-content;
-      display: flex;
-      flex-direction: column;
+    }
+
+    .fee-section {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: #fff8f8;
+      border-radius: 8px;
+      border: 1px solid #ffdddd;
+    }
+
+    .fee-section .form-group {
+      margin-bottom: 0.8rem;
+    }
+
+    .fee-section label {
+      font-size: 0.85rem;
+      color: #d92323;
+    }
+
+    .fee-section input[type="number"] {
+      padding: 0.5rem;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    #tax-toggle {
+      margin-left: 0.5rem;
+      transform: scale(1.2);
     }
 
     .customer-info {
       margin-top: 1.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #eee;
+      padding: 1.5rem;
+      background: #f8f8f8;
+      border-radius: 8px;
+      border: 1px solid #eee;
     }
 
     .customer-info h4 {
@@ -112,11 +123,11 @@
       color: #d92323;
     }
 
-    .form-group {
+    .customer-info .form-group {
       margin-bottom: 1rem;
     }
 
-    .form-group label {
+    .customer-info label {
       display: block;
       margin-bottom: 0.3rem;
       font-size: 0.9rem;
@@ -124,21 +135,13 @@
       color: #555;
     }
 
-    .form-group input,
-    .form-group textarea {
+    .customer-info input,
+    .customer-info textarea {
       width: 100%;
       padding: 0.6rem;
       border: 1px solid #ddd;
       border-radius: 4px;
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.9rem;
-      transition: border-color 0.3s;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #d92323;
     }
 
     .menu-category h3 {
@@ -270,38 +273,30 @@
       font-weight: 600;
     }
 
-    /* ========== ORDER SUMMARY ========== */
     #order-items {
       max-height: 300px;
       overflow-y: auto;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       padding-right: 0.5rem;
     }
 
     .order-item {
       display: flex;
       justify-content: space-between;
-      padding: 0.8rem 0;
+      padding: 0.6rem 0;
       border-bottom: 1px solid #eee;
+      font-size: 0.9rem;
     }
 
     .order-item-name {
       flex: 2;
       font-weight: 500;
-      font-size: 0.9rem;
-    }
-
-    .order-item-quantity {
-      flex: 1;
-      text-align: center;
-      font-size: 0.9rem;
     }
 
     .order-item-price {
       flex: 1;
       text-align: right;
       font-weight: 600;
-      font-size: 0.9rem;
     }
 
     .order-summary h3 {
@@ -342,7 +337,6 @@
       box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
     }
 
-    /* ========== RESPONSIVE ========== */
     @media (max-width: 992px) {
       .menu-container {
         padding-right: 1rem;
@@ -369,10 +363,6 @@
         font-size: 1.6rem;
         padding: 0.6rem 1.8rem;
       }
-
-      .tagline {
-        font-size: 1.5rem;
-      }
     }
 
     @media (max-width: 480px) {
@@ -384,15 +374,10 @@
         font-size: 1.3rem;
         padding: 0.5rem 1.5rem;
       }
-
-      .tagline {
-        font-size: 1.3rem;
-      }
     }
   </style>
 </head>
 <body>
-  <!-- ========== HEADER ========== -->
   <header>
     <div class="logo-container">
       <img src="logo2.png" alt="Pincak Lamak" class="logo-img">
@@ -400,7 +385,6 @@
     <div class="delivery-text">Rumah Makan Padang - Delivery Order</div>
   </header>
 
-  <!-- ========== MAIN CONTENT ========== -->
   <main>
     <section class="menu-container" id="menu-list">
       <!-- Menu items will be dynamically inserted here -->
@@ -410,8 +394,26 @@
       <h3>Pesanan Anda</h3>
       <div id="order-items"></div>
       <p><strong>Subtotal:</strong> <span id="subtotal">Rp 0</span></p>
+
+      <div class="fee-section">
+        <div class="form-group">
+          <label for="delivery-fee">Ongkos Kirim (Rp)</label>
+          <input type="number" id="delivery-fee" name="delivery-fee" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label for="service-fee">Biaya Servis (Rp)</label>
+          <input type="number" id="service-fee" name="service-fee" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="tax-toggle" checked>
+            Pajak (10%)
+          </label>
+        </div>
+      </div>
+
       <p><strong>Total:</strong> <span id="total">Rp 0</span></p>
-      
+
       <div class="customer-info">
         <h4>Informasi Pelanggan</h4>
         <form id="customer-form">
@@ -433,13 +435,12 @@
           </div>
         </form>
       </div>
-      
+
       <a id="wa-link" href="#" target="_blank" class="order-button">Pesan via WhatsApp</a>
     </aside>
   </main>
 
   <script>
-    // Data menu dari JSON yang sudah diperbaiki
     const menuData = {
       "makanan": [
         {
@@ -546,47 +547,44 @@
         }
       ],
       "minuman": [
-        {
-          "NAMA MENU": "Es Jeruk",
-          "FOTO": "images/esjeruk.png",
-          "DESKRIPSI": "Es Jeruk adalah minuman segar yang memikat dengan warna oranye cerah alami dan tampilan bening yang menggoda. Terbuat dari perasan jeruk segar yang manis-asam, disajikan dengan es batu yang mempercantik tampilannya dalam gelas tinggi berembun. Aroma citrus yang harum berpadu dengan sensasi dingin yang menyegarkan, menjadikan es jeruk sebagai pelengkap sempurna di tengah hidangan lezat. Kesederhanaannya menghadirkan kesan estetik yang menyenangkan, sekaligus menyegarkan tubuh dan pikiran dalam setiap tegukan.",
-          "HARGA": 5000
-        },
-        {
-          "NAMA MENU": "Es Teh",
-          "FOTO": "images/esteh.png",
-          "DESKRIPSI": "Es Teh adalah minuman klasik yang tampil elegan dengan warna cokelat keemasan yang jernih dan menggoda. Disajikan dalam gelas tinggi berisi es batu yang berkilau, es teh memancarkan kesegaran yang menenangkan sejak pandangan pertama. Aroma teh yang ringan berpadu dengan rasa manis seimbang, menjadikannya pelengkap sempurna untuk segala jenis hidangan. Tampilan sederhananya justru menghadirkan kesan estetik yang bersih dan menyegarkan, menjadikan setiap tegukan es teh sebagai jeda yang menyejukkan di tengah hangatnya sajian.",
-          "HARGA": 5000
-        },
-        {
-          "NAMA MENU": "Jeruk Hangat",
-          "FOTO": "images/jerukhangat.png",
-          "DESKRIPSI": "Jeruk hangat adalah minuman menyehatkan yang tampil cantik dalam kesederhanaannya, dengan warna oranye cerah yang hangat dan aroma citrus yang segar. Disajikan dalam gelas bening atau cangkir sederhana, uap lembut yang mengepul dari permukaannya menciptakan kesan estetik yang menenangkan. Perasan jeruk segar yang hangat ini menghadirkan perpaduan rasa manis dan asam yang lembut, memberikan kehangatan alami sekaligus menyegarkan tubuh. Jeruk hangat bukan hanya minuman penghangat, tapi juga simbol kesegaran yang menenangkan dalam tampilan yang sederhana namun memesona.",
-          "HARGA": 5000
-        },
-        {
-          "NAMA MENU": "Teh Hangat",
-          "FOTO": "images/tehhangat.png",
-          "DESKRIPSI": "Teh hangat adalah sajian minuman yang sederhana namun penuh kehangatan dan estetika alami. Disajikan dalam cangkir atau gelas bening, warna cokelat keemasan teh yang mengepul lembut menciptakan suasana tenang dan nyaman. Aroma khas daun teh yang harum menguar perlahan, menghadirkan sensasi relaksasi sebelum bahkan diseruput. Dengan rasa yang lembut dan menenangkan, teh hangat menjadi pelengkap sempurna di tengah hidangan atau sebagai penutup yang hangat setelah santapan lezat, menciptakan pengalaman minum yang estetik dan penuh kedamaian.",
-          "HARGA": 5000
-        },
-        {
-          "NAMA MENU": "Teh Tawar Hangat",
-          "FOTO": "images/tehtawar.png",
-          "DESKRIPSI": "Teh tawar hangat adalah minuman yang merepresentasikan kesederhanaan dengan pesona alami yang menenangkan. Disajikan dalam cangkir bening atau keramik sederhana, warna cokelat keemasan dari teh yang mengepul lembut menghadirkan nuansa hangat dan estetik. Tanpa tambahan gula, rasa murni daun teh terasa lembut di lidah, memberikan ketenangan sekaligus kesegaran yang halus. Aroma teh yang ringan namun khas memperkaya pengalaman minum, menjadikan teh tawar hangat sebagai pelengkap sempurna dalam setiap waktu istirahat atau setelah menikmati hidangan yang kaya rasa.",
-          "HARGA": 3000
-        }
-      ]
+    {
+      "NAMA MENU": "Es Jeruk",
+      "FOTO": "images/esjeruk.png",
+      "DESKRIPSI": "Es Jeruk adalah minuman segar yang memikat dengan warna oranye cerah alami dan tampilan bening yang menggoda. Terbuat dari perasan jeruk segar yang manis-asam, disajikan dengan es batu yang mempercantik tampilannya dalam gelas tinggi berembun. Aroma citrus yang harum berpadu dengan sensasi dingin yang menyegarkan, menjadikan es jeruk sebagai pelengkap sempurna di tengah hidangan lezat. Kesederhanaannya menghadirkan kesan estetik yang menyenangkan, sekaligus menyegarkan tubuh dan pikiran dalam setiap tegukan.",
+      "HARGA": 5000
+    },
+    {
+      "NAMA MENU": "Es Teh",
+      "FOTO": "images/esteh.png",
+      "DESKRIPSI": "Es Teh adalah minuman klasik yang tampil elegan dengan warna cokelat keemasan yang jernih dan menggoda. Disajikan dalam gelas tinggi berisi es batu yang berkilau, es teh memancarkan kesegaran yang menenangkan sejak pandangan pertama. Aroma teh yang ringan berpadu dengan rasa manis seimbang, menjadikannya pelengkap sempurna untuk segala jenis hidangan. Tampilan sederhananya justru menghadirkan kesan estetik yang bersih dan menyegarkan, menjadikan setiap tegukan es teh sebagai jeda yang menyejukkan di tengah hangatnya sajian.",
+      "HARGA": 5000
+    },
+    {
+      "NAMA MENU": "Jeruk Hangat",
+      "FOTO": "images/jerukhangat.png",
+      "DESKRIPSI": "Jeruk hangat adalah minuman menyehatkan yang tampil cantik dalam kesederhanaannya, dengan warna oranye cerah yang hangat dan aroma citrus yang segar. Disajikan dalam gelas bening atau cangkir sederhana, uap lembut yang mengepul dari permukaannya menciptakan kesan estetik yang menenangkan. Perasan jeruk segar yang hangat ini menghadirkan perpaduan rasa manis dan asam yang lembut, memberikan kehangatan alami sekaligus menyegarkan tubuh. Jeruk hangat bukan hanya minuman penghangat, tapi juga simbol kesegaran yang menenangkan dalam tampilan yang sederhana namun memesona.",
+      "HARGA": 5000
+    },
+    {
+      "NAMA MENU": "Teh Hangat",
+      "FOTO": "images/tehhangat.png",
+      "DESKRIPSI": "Teh hangat adalah sajian minuman yang sederhana namun penuh kehangatan dan estetika alami. Disajikan dalam cangkir atau gelas bening, warna cokelat keemasan teh yang mengepul lembut menciptakan suasana tenang dan nyaman. Aroma khas daun teh yang harum menguar perlahan, menghadirkan sensasi relaksasi sebelum bahkan diseruput. Dengan rasa yang lembut dan menenangkan, teh hangat menjadi pelengkap sempurna di tengah hidangan atau sebagai penutup yang hangat setelah santapan lezat, menciptakan pengalaman minum yang estetik dan penuh kedamaian.",
+      "HARGA": 5000
+    },
+    {
+      "NAMA MENU": "Teh Tawar Hangat",
+      "FOTO": "images/tehtawar.png",
+      "DESKRIPSI": "Teh tawar hangat adalah minuman yang merepresentasikan kesederhanaan dengan pesona alami yang menenangkan. Disajikan dalam cangkir bening atau keramik sederhana, warna cokelat keemasan dari teh yang mengepul lembut menghadirkan nuansa hangat dan estetik. Tanpa tambahan gula, rasa murni daun teh terasa lembut di lidah, memberikan ketenangan sekaligus kesegaran yang halus. Aroma teh yang ringan namun khas memperkaya pengalaman minum, menjadikan teh tawar hangat sebagai pelengkap sempurna dalam setiap waktu istirahat atau setelah menikmati hidangan yang kaya rasa.",
+      "HARGA": 3000
+    }
+   ]
     };
 
-    // Variabel untuk menyimpan pesanan
     let cart = [];
 
-    // Fungsi untuk menampilkan menu
     function displayMenu() {
       const menuList = document.getElementById('menu-list');
       
-      // Tampilkan makanan
       const foodSection = document.createElement('div');
       foodSection.className = 'menu-category';
       foodSection.innerHTML = '<h3>Makanan</h3><div class="menu-grid" id="food-grid"></div>';
@@ -597,7 +595,6 @@
         foodGrid.appendChild(createMenuItem(item));
       });
       
-      // Tampilkan minuman
       const drinkSection = document.createElement('div');
       drinkSection.className = 'menu-category';
       drinkSection.innerHTML = '<h3>Minuman</h3><div class="menu-grid" id="drink-grid"></div>';
@@ -609,12 +606,10 @@
       });
     }
 
-    // Fungsi untuk membuat elemen menu item
     function createMenuItem(item) {
       const menuItem = document.createElement('div');
       menuItem.className = 'menu-item';
       
-      // Buat elemen-elemen
       const img = document.createElement('img');
       img.src = item.FOTO;
       img.alt = item['NAMA MENU'];
@@ -648,7 +643,6 @@
         <button class="increase">+</button>
       `;
       
-      // Susun elemen
       priceControls.appendChild(priceSpan);
       priceControls.appendChild(quantityDiv);
       
@@ -660,7 +654,6 @@
       menuItem.appendChild(img);
       menuItem.appendChild(contentDiv);
       
-      // Event listener untuk tombol More/Less
       readMoreBtn.addEventListener('click', (e) => {
         e.preventDefault();
         descContainer.classList.toggle('expanded');
@@ -668,7 +661,6 @@
           descContainer.classList.contains('expanded') ? 'Less' : 'More';
       });
       
-      // Event listener untuk quantity
       const increaseBtn = quantityDiv.querySelector('.increase');
       const decreaseBtn = quantityDiv.querySelector('.decrease');
       const quantitySpan = quantityDiv.querySelector('.quantity');
@@ -690,21 +682,16 @@
       return menuItem;
     }
 
-    // Fungsi untuk memperbarui keranjang belanja
     function updateCart(item, quantity) {
-      // Cari apakah item sudah ada di cart
       const existingItemIndex = cart.findIndex(cartItem => cartItem.name === item['NAMA MENU']);
       
       if (existingItemIndex !== -1) {
         if (quantity === 0) {
-          // Hapus item jika quantity 0
           cart.splice(existingItemIndex, 1);
         } else {
-          // Update quantity
           cart[existingItemIndex].quantity = quantity;
         }
       } else if (quantity > 0) {
-        // Tambahkan item baru
         cart.push({
           name: item['NAMA MENU'],
           price: item.HARGA,
@@ -712,23 +699,19 @@
         });
       }
       
-      // Update tampilan keranjang
       updateOrderSummary();
     }
 
-    // Fungsi untuk memperbarui ringkasan pesanan
     function updateOrderSummary() {
       const orderItems = document.getElementById('order-items');
       const subtotalElement = document.getElementById('subtotal');
       const totalElement = document.getElementById('total');
       const waLink = document.getElementById('wa-link');
       
-      // Kosongkan dulu
       orderItems.innerHTML = '';
       
       let subtotal = 0;
       
-      // Tambahkan item yang dipesan
       cart.forEach(item => {
         const itemTotal = item.price * item.quantity;
         subtotal += itemTotal;
@@ -743,11 +726,34 @@
         orderItems.appendChild(orderItem);
       });
       
-      // Hitung total
+      const deliveryFee = parseInt(document.getElementById('delivery-fee').value) || 0;
+      const serviceFee = parseInt(document.getElementById('service-fee').value) || 0;
+      const applyTax = document.getElementById('tax-toggle').checked;
+      const tax = applyTax ? subtotal * 0.1 : 0;
+
+      const total = subtotal + deliveryFee + serviceFee + tax;
+
       subtotalElement.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
-      totalElement.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
       
-      // Update link WhatsApp
+      orderItems.innerHTML += `
+        <div class="order-item">
+          <div class="order-item-name">Ongkos Kirim</div>
+          <div class="order-item-price">Rp ${deliveryFee.toLocaleString('id-ID')}</div>
+        </div>
+        <div class="order-item">
+          <div class="order-item-name">Biaya Servis</div>
+          <div class="order-item-price">Rp ${serviceFee.toLocaleString('id-ID')}</div>
+        </div>
+        ${applyTax ? `
+        <div class="order-item">
+          <div class="order-item-name">Pajak (10%)</div>
+          <div class="order-item-price">Rp ${tax.toLocaleString('id-ID')}</div>
+        </div>
+        ` : ''}
+      `;
+
+      totalElement.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+
       if (cart.length > 0) {
         const customerForm = document.getElementById('customer-form');
         const nama = customerForm.nama.value;
@@ -765,15 +771,15 @@
           message += `- ${item.name} (${item.quantity}x) - Rp ${(item.price * item.quantity).toLocaleString('id-ID')}\n`;
         });
         
-        message += `\n*Total:* Rp ${subtotal.toLocaleString('id-ID')}\n`;
+        message += `\n*Subtotal:* Rp ${subtotal.toLocaleString('id-ID')}\n`;
+        if (deliveryFee > 0) message += `*Ongkos Kirim:* Rp ${deliveryFee.toLocaleString('id-ID')}\n`;
+        if (serviceFee > 0) message += `*Biaya Servis:* Rp ${serviceFee.toLocaleString('id-ID')}\n`;
+        if (applyTax) message += `*Pajak (10%):* Rp ${tax.toLocaleString('id-ID')}\n`;
+        message += `*Total:* Rp ${total.toLocaleString('id-ID')}\n`;
         
-        if (catatan) {
-          message += `\n*Catatan:* ${catatan}\n`;
-        }
+        if (catatan) message += `\n*Catatan:* ${catatan}\n`;
+        message += `\nTerima kasih!`; // Pesan terima kasih ditambahkan
         
-        message += `\nTerima kasih!`;
-        
-        // Ganti nomor WhatsApp berikut dengan nomor bisnis Anda
         waLink.href = `https://wa.me/6285880428160?text=${encodeURIComponent(message)}`;
         waLink.style.display = 'block';
       } else {
@@ -781,9 +787,11 @@
       }
     }
 
-    // Jalankan saat halaman dimuat
     document.addEventListener('DOMContentLoaded', () => {
       displayMenu();
+      document.getElementById('delivery-fee').addEventListener('input', updateOrderSummary);
+      document.getElementById('service-fee').addEventListener('input', updateOrderSummary);
+      document.getElementById('tax-toggle').addEventListener('change', updateOrderSummary);
       document.getElementById('customer-form').addEventListener('input', updateOrderSummary);
     });
   </script>
