@@ -95,6 +95,50 @@
       position: sticky;
       top: 2rem;
       height: fit-content;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .customer-info {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #eee;
+    }
+
+    .customer-info h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #d92323;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #555;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #d92323;
     }
 
     .menu-category h3 {
@@ -228,7 +272,7 @@
 
     /* ========== ORDER SUMMARY ========== */
     #order-items {
-      max-height: 400px;
+      max-height: 300px;
       overflow-y: auto;
       margin-bottom: 1.5rem;
       padding-right: 0.5rem;
@@ -244,17 +288,20 @@
     .order-item-name {
       flex: 2;
       font-weight: 500;
+      font-size: 0.9rem;
     }
 
     .order-item-quantity {
       flex: 1;
       text-align: center;
+      font-size: 0.9rem;
     }
 
     .order-item-price {
       flex: 1;
       text-align: right;
       font-weight: 600;
+      font-size: 0.9rem;
     }
 
     .order-summary h3 {
@@ -312,7 +359,7 @@
         padding-right: 0;
         margin-bottom: 2rem;
       }
-
+      
       .order-summary {
         position: static;
         margin-top: 1rem;
@@ -364,6 +411,29 @@
       <div id="order-items"></div>
       <p><strong>Subtotal:</strong> <span id="subtotal">Rp 0</span></p>
       <p><strong>Total:</strong> <span id="total">Rp 0</span></p>
+      
+      <div class="customer-info">
+        <h4>Informasi Pelanggan</h4>
+        <form id="customer-form">
+          <div class="form-group">
+            <label for="nama">Nama Lengkap</label>
+            <input type="text" id="nama" name="nama" required>
+          </div>
+          <div class="form-group">
+            <label for="telepon">Nomor Telepon</label>
+            <input type="tel" id="telepon" name="telepon" required>
+          </div>
+          <div class="form-group">
+            <label for="alamat">Alamat Lengkap</label>
+            <textarea id="alamat" name="alamat" rows="2" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="catatan">Catatan Tambahan</label>
+            <textarea id="catatan" name="catatan" rows="2"></textarea>
+          </div>
+        </form>
+      </div>
+      
       <a id="wa-link" href="#" target="_blank" class="order-button">Pesan via WhatsApp</a>
     </aside>
   </main>
@@ -673,11 +743,29 @@
       
       // Update link WhatsApp
       if (cart.length > 0) {
+        const customerForm = document.getElementById('customer-form');
+        const nama = customerForm.nama.value;
+        const telepon = customerForm.telepon.value;
+        const alamat = customerForm.alamat.value;
+        const catatan = customerForm.catatan.value;
+        
         let message = `Halo, saya ingin memesan:\n\n`;
+        message += `*Nama:* ${nama}\n`;
+        message += `*No. Telepon:* ${telepon}\n`;
+        message += `*Alamat:* ${alamat}\n\n`;
+        
+        message += `*Detail Pesanan:*\n`;
         cart.forEach(item => {
-          message += `${item.name} (${item.quantity}x) - Rp ${(item.price * item.quantity).toLocaleString('id-ID')}\n`;
+          message += `- ${item.name} (${item.quantity}x) - Rp ${(item.price * item.quantity).toLocaleString('id-ID')}\n`;
         });
-        message += `\nTotal: Rp ${subtotal.toLocaleString('id-ID')}\n\nTerima kasih!`;
+        
+        message += `\n*Total:* Rp ${subtotal.toLocaleString('id-ID')}\n`;
+        
+        if (catatan) {
+          message += `\n*Catatan:* ${catatan}\n`;
+        }
+        
+        message += `\nTerima kasih!`;
         
         // Ganti nomor WhatsApp berikut dengan nomor bisnis Anda
         waLink.href = `https://wa.me/6285880428160?text=${encodeURIComponent(message)}`;
@@ -690,6 +778,7 @@
     // Jalankan saat halaman dimuat
     document.addEventListener('DOMContentLoaded', () => {
       displayMenu();
+      document.getElementById('customer-form').addEventListener('input', updateOrderSummary);
     });
   </script>
 </body>
