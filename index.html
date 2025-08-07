@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -498,95 +499,99 @@
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
   <script>
     let cart = [];
-  // Koordinat rumah makan (sesuaikan dengan lokasi sebenarnya)
-  const RESTAURANT_LOCATION = {
-    lat: -6.3284352,
-    lng: 106.6714169,
-    name: "Pincak Lamak"
-  };
+    // Koordinat rumah makan (sesuaikan dengan lokasi sebenarnya)
+    const RESTAURANT_LOCATION = {
+      lat: -6.3284352,
+      lng: 106.6714169,
+      name: "Pincak Lamak"
+    };
  
-  let map, userMarker;
+    let map, userMarker;
 
-  // Fungsi inisialisasi peta
-  function initMap() {
-  map = L.map('mini-map').setView([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng], 14);
-  
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    // Fungsi inisialisasi peta
+    function initMap() {
+      map = L.map('mini-map').setView([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng], 14);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-  // Marker restoran
-  L.marker([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng])
-    .addTo(map)
-    .bindPopup(`<b>${RESTAURANT_LOCATION.name}</b>`)
-    .openPopup();
+      // Marker restoran
+      L.marker([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng])
+        .addTo(map)
+        .bindPopup(`<b>${RESTAURANT_LOCATION.name}</b>`)
+        .openPopup();
 
-  // Marker pengguna (bisa digeser)
-  userMarker = L.marker([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng], {
-    draggable: true
-  }).addTo(map);
+      // Marker pengguna (bisa digeser)
+      userMarker = L.marker([RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng], {
+        draggable: true
+      }).addTo(map);
 
-  // Cari lokasi pengguna otomatis
-  locateUser();
+      // Cari lokasi pengguna otomatis
+      locateUser();
 
-  // Event saat marker digeser
-  userMarker.on('dragend', function(e) {
-    updateLocation(userMarker.getLatLng());
-  });
-}
+      // Event saat marker digeser
+      userMarker.on('dragend', function(e) {
+        updateLocation(userMarker.getLatLng());
+      });
+    }
 
-// Fungsi deteksi lokasi pengguna
-function locateUser() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const userLoc = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-        userMarker.setLatLng(userLoc);
-        map.setView(userLoc, 15);
-        updateLocation(userLoc);
-      },
-      (error) => {
-        console.log("Pengguna menolak akses lokasi");
-        updateLocation(RESTAURANT_LOCATION);
+    // Fungsi deteksi lokasi pengguna
+    function locateUser() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const userLoc = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            userMarker.setLatLng(userLoc);
+            map.setView(userLoc, 15);
+            updateLocation(userLoc);
+          },
+          (error) => {
+            console.log("Pengguna menolak akses lokasi");
+            updateLocation(RESTAURANT_LOCATION);
+          }
+        );
       }
-    );
-  }
-}
+    }
 
-// Fungsi update lokasi
-function updateLocation(pos) {
-  document.getElementById('lokasi-lat').value = pos.lat;
-  document.getElementById('lokasi-lng').value = pos.lng;
-  calculateDistance(pos);
-}
+    // Fungsi update lokasi
+    function updateLocation(pos) {
+      document.getElementById('lokasi-lat').value = pos.lat;
+      document.getElementById('lokasi-lng').value = pos.lng;
+      calculateDistance(pos);
+    }
 
-// Fungsi hitung jarak
-function calculateDistance(userPos) {
-  const R = 6371; // Radius bumi dalam km
-  const dLat = (userPos.lat - RESTAURANT_LOCATION.lat) * Math.PI / 180;
-  const dLon = (userPos.lng - RESTAURANT_LOCATION.lng) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(RESTAURANT_LOCATION.lat * Math.PI / 180) * 
-    Math.cos(userPos.lat * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  const distance = R * c;
-  
-  const roundedDistance = Math.round(distance * 10) / 10;
-  document.getElementById('jarak-display').textContent = `${roundedDistance} km`;
-  document.getElementById('jarak').value = roundedDistance;
-  
-  // Hitung ongkir (0-2km gratis, +Rp5.000/km setelahnya)
-  const deliveryFee = roundedDistance <= 2 ? 0 : Math.round((roundedDistance - 2) * 5000);
-  document.getElementById('delivery-fee').value = deliveryFee;
-  
-  updateOrderSummary();
-}
-
-    function toRad(degrees) {
-      return degrees * Math.PI / 180;
+    // Fungsi hitung jarak
+    function calculateDistance(userPos) {
+      const R = 6371; // Radius bumi dalam km
+      const dLat = (userPos.lat - RESTAURANT_LOCATION.lat) * Math.PI / 180;
+      const dLon = (userPos.lng - RESTAURANT_LOCATION.lng) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(RESTAURANT_LOCATION.lat * Math.PI / 180) * 
+        Math.cos(userPos.lat * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const distance = R * c;
+      
+      // Pembulatan ke atas ke 1 desimal
+      const roundedDistance = Math.ceil(distance * 10) / 10;
+      document.getElementById('jarak-display').textContent = `${roundedDistance} km`;
+      document.getElementById('jarak').value = roundedDistance;
+      
+      // Perhitungan ongkir baru:
+      // - 0-2 km: Gratis
+      // - 2.1-3 km: Rp 5.000
+      // - Setiap penambahan 1 km: +Rp 5.000
+      let deliveryFee = 0;
+      if (roundedDistance > 2) {
+        const kmLebih = Math.ceil(roundedDistance - 2); // Pembulatan ke atas
+        deliveryFee = kmLebih * 5000;
+      }
+      
+      document.getElementById('delivery-fee').value = deliveryFee;
+      updateOrderSummary();
     }
 
     function displayMenu() {
@@ -771,9 +776,22 @@ function calculateDistance(userPos) {
         const lokasiLat = document.getElementById('lokasi-lat').value;
         const lokasiLng = document.getElementById('lokasi-lng').value;
         
-        let message = `Halo, saya ingin memesan:\n\n`;
-        message += `*Nama:* ${nama}\n`;
-        message += `*No. Telepon:* ${telepon}\n`;
+        const now = new Date();
+        const options = { 
+          weekday: 'long', 
+          day: 'numeric', 
+          month: 'long', 
+          year: 'numeric',
+          hour: '2-digit', 
+          minute: '2-digit'
+        };
+        const orderTime = now.toLocaleDateString('id-ID', options);
+        
+        let message = `⏰ *Waktu Pemesanan:* ${orderTime}\n\n`;
+        message += `──────────────────────\n\n`;
+        message += `Halo, saya ingin memesan:\n\n`;
+        message += `*Nama:* ${nama || '-'}\n`;
+        message += `*No. Telepon:* ${telepon || '-'}\n`;
         message += `*Alamat:* ${alamat}\n`;
         message += `*Lokasi:* https://maps.google.com/?q=${lokasiLat},${lokasiLng}\n`;
         message += `*Jarak dari restoran:* ${jarak} km\n\n`;
@@ -799,8 +817,7 @@ function calculateDistance(userPos) {
       }
     }
 
-    // Data menu (sama seperti sebelumnya)
-    
+    // Data menu
     const menuData = {
       "makanan": [
         {
@@ -906,39 +923,39 @@ function calculateDistance(userPos) {
           "HARGA": 5000
         }
       ],
-	"minuman": [
-    {
-      "NAMA MENU": "Es Jeruk",
-      "FOTO": "images/esjeruk.png",
-      "DESKRIPSI": "Es Jeruk adalah minuman segar yang memikat dengan warna oranye cerah alami dan tampilan bening yang menggoda. Terbuat dari perasan jeruk segar yang manis-asam, disajikan dengan es batu yang mempercantik tampilannya dalam gelas tinggi berembun. Aroma citrus yang harum berpadu dengan sensasi dingin yang menyegarkan, menjadikan es jeruk sebagai pelengkap sempurna di tengah hidangan lezat. Kesederhanaannya menghadirkan kesan estetik yang menyenangkan, sekaligus menyegarkan tubuh dan pikiran dalam setiap tegukan.",
-      "HARGA": 5000
-    },
-    {
-      "NAMA MENU": "Es Teh",
-      "FOTO": "images/esteh.png",
-      "DESKRIPSI": "Es Teh adalah minuman klasik yang tampil elegan dengan warna cokelat keemasan yang jernih dan menggoda. Disajikan dalam gelas tinggi berisi es batu yang berkilau, es teh memancarkan kesegaran yang menenangkan sejak pandangan pertama. Aroma teh yang ringan berpadu dengan rasa manis seimbang, menjadikannya pelengkap sempurna untuk segala jenis hidangan. Tampilan sederhananya justru menghadirkan kesan estetik yang bersih dan menyegarkan, menjadikan setiap tegukan es teh sebagai jeda yang menyejukkan di tengah hangatnya sajian.",
-      "HARGA": 5000
-    },
-    {
-      "NAMA MENU": "Jeruk Hangat",
-      "FOTO": "images/jerukhangat.png",
-      "DESKRIPSI": "Jeruk hangat adalah minuman menyehatkan yang tampil cantik dalam kesederhanaannya, dengan warna oranye cerah yang hangat dan aroma citrus yang segar. Disajikan dalam gelas bening atau cangkir sederhana, uap lembut yang mengepul dari permukaannya menciptakan kesan estetik yang menenangkan. Perasan jeruk segar yang hangat ini menghadirkan perpaduan rasa manis dan asam yang lembut, memberikan kehangatan alami sekaligus menyegarkan tubuh. Jeruk hangat bukan hanya minuman penghangat, tapi juga simbol kesegaran yang menenangkan dalam tampilan yang sederhana namun memesona.",
-      "HARGA": 5000
-    },
-    {
-      "NAMA MENU": "Teh Hangat",
-      "FOTO": "images/tehhangat.png",
-      "DESKRIPSI": "Teh hangat adalah sajian minuman yang sederhana namun penuh kehangatan dan estetika alami. Disajikan dalam cangkir atau gelas bening, warna cokelat keemasan teh yang mengepul lembut menciptakan suasana tenang dan nyaman. Aroma khas daun teh yang harum menguar perlahan, menghadirkan sensasi relaksasi sebelum bahkan diseruput. Dengan rasa yang lembut dan menenangkan, teh hangat menjadi pelengkap sempurna di tengah hidangan atau sebagai penutup yang hangat setelah santapan lezat, menciptakan pengalaman minum yang estetik dan penuh kedamaian.",
-      "HARGA": 5000
-    },
-    {
-      "NAMA MENU": "Teh Tawar Hangat",
-      "FOTO": "images/tehtawar.png",
-      "DESKRIPSI": "Teh tawar hangat adalah minuman yang merepresentasikan kesederhanaan dengan pesona alami yang menenangkan. Disajikan dalam cangkir bening atau keramik sederhana, warna cokelat keemasan dari teh yang mengepul lembut menghadirkan nuansa hangat dan estetik. Tanpa tambahan gula, rasa murni daun teh terasa lembut di lidah, memberikan ketenangan sekaligus kesegaran yang halus. Aroma teh yang ringan namun khas memperkaya pengalaman minum, menjadikan teh tawar hangat sebagai pelengkap sempurna dalam setiap waktu istirahat atau setelah menikmati hidangan yang kaya rasa.",
-      "HARGA": 3000
-    }
-   ]
-    };
+      "minuman": [
+    	{
+      	  "NAMA MENU": "Es Jeruk",
+          "FOTO": "images/esjeruk.png",
+          "DESKRIPSI": "Es Jeruk adalah minuman segar yang memikat dengan warna oranye cerah alami dan tampilan bening yang menggoda. Terbuat dari perasan jeruk segar yang manis-asam, disajikan dengan es batu yang mempercantik tampilannya dalam gelas tinggi berembun. Aroma citrus yang harum berpadu dengan sensasi dingin yang menyegarkan, menjadikan es jeruk sebagai pelengkap sempurna di tengah hidangan lezat. Kesederhanaannya menghadirkan kesan estetik yang menyenangkan, sekaligus menyegarkan tubuh dan pikiran dalam setiap tegukan.",
+          "HARGA": 5000
+    	},
+    	{
+      	  "NAMA MENU": "Es Teh",
+          "FOTO": "images/esteh.png",
+          "DESKRIPSI": "Es Teh adalah minuman klasik yang tampil elegan dengan warna cokelat keemasan yang jernih dan menggoda. Disajikan dalam gelas tinggi berisi es batu yang berkilau, es teh memancarkan kesegaran yang menenangkan sejak pandangan pertama. Aroma teh yang ringan berpadu dengan rasa manis seimbang, menjadikannya pelengkap sempurna untuk segala jenis hidangan. Tampilan sederhananya justru menghadirkan kesan estetik yang bersih dan menyegarkan, menjadikan setiap tegukan es teh sebagai jeda yang menyejukkan di tengah hangatnya sajian.",
+          "HARGA": 5000
+    	},
+    	{
+          "NAMA MENU": "Jeruk Hangat",
+          "FOTO": "images/jerukhangat.png",
+          "DESKRIPSI": "Jeruk hangat adalah minuman menyehatkan yang tampil cantik dalam kesederhanaannya, dengan warna oranye cerah yang hangat dan aroma citrus yang segar. Disajikan dalam gelas bening atau cangkir sederhana, uap lembut yang mengepul dari permukaannya menciptakan kesan estetik yang menenangkan. Perasan jeruk segar yang hangat ini menghadirkan perpaduan rasa manis dan asam yang lembut, memberikan kehangatan alami sekaligus menyegarkan tubuh. Jeruk hangat bukan hanya minuman penghangat, tapi juga simbol kesegaran yang menenangkan dalam tampilan yang sederhana namun memesona.",
+          "HARGA": 5000
+    	},
+        {
+          "NAMA MENU": "Teh Hangat",
+          "FOTO": "images/tehhangat.png",
+          "DESKRIPSI": "Teh hangat adalah sajian minuman yang sederhana namun penuh kehangatan dan estetika alami. Disajikan dalam cangkir atau gelas bening, warna cokelat keemasan teh yang mengepul lembut menciptakan suasana tenang dan nyaman. Aroma khas daun teh yang harum menguar perlahan, menghadirkan sensasi relaksasi sebelum bahkan diseruput. Dengan rasa yang lembut dan menenangkan, teh hangat menjadi pelengkap sempurna di tengah hidangan atau sebagai penutup yang hangat setelah santapan lezat, menciptakan pengalaman minum yang estetik dan penuh kedamaian.",
+          "HARGA": 5000
+        },
+    	{
+          "NAMA MENU": "Teh Tawar Hangat",
+          "FOTO": "images/tehtawar.png",
+          "DESKRIPSI": "Teh tawar hangat adalah minuman yang merepresentasikan kesederhanaan dengan pesona alami yang menenangkan. Disajikan dalam cangkir bening atau keramik sederhana, warna cokelat keemasan dari teh yang mengepul lembut menghadirkan nuansa hangat dan estetik. Tanpa tambahan gula, rasa murni daun teh terasa lembut di lidah, memberikan ketenangan sekaligus kesegaran yang halus. Aroma teh yang ringan namun khas memperkaya pengalaman minum, menjadikan teh tawar hangat sebagai pelengkap sempurna dalam setiap waktu istirahat atau setelah menikmati hidangan yang kaya rasa.",
+          "HARGA": 3000
+        }
+   	]
+    	};
     
       document.addEventListener('DOMContentLoaded', () => {
       displayMenu();
