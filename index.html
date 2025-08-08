@@ -975,40 +975,6 @@
       document.getElementById('tax-toggle').addEventListener('change', updateOrderSummary);
       document.getElementById('customer-form').addEventListener('input', updateOrderSummary);
     });
-    
-    // Fungsi untuk kirim data ke Google Sheets
-    async function sendToGoogleSheets() {
-      const data = {
-    	nama: document.getElementById('nama').value,
-   	telepon: document.getElementById('telepon').value,
-    	alamat: document.getElementById('alamat').value,
-    	items: cart.map(item => `${item.name} (${item.quantity}x)`),
-    	subtotal: document.getElementById('subtotal').textContent.replace("Rp ", ""),
-    	ongkir: document.getElementById('delivery-fee').value,
-    	pajak: document.getElementById('tax-toggle').checked ? 
-               parseFloat(document.getElementById('subtotal').textContent.replace("Rp ", "")) * 0.1,
-    	total: document.getElementById('total').textContent.replace("Rp ", ""),
-    	catatan: document.getElementById('catatan').value
-     };
-
-     try {
-       await fetch('https://script.google.com/macros/s/AKfycbwNanQEoTLriR5409vm1_MtUXe9xAj9OWPL8h9cnqR6pG8njKJcsK1ZvcRnP94E_M5OJA/exec', {
-      	 method: 'POST',
-      	 body: JSON.stringify(data)
-       });
-       console.log("Data tersimpan di Google Sheets!");
-     } catch (error) {
-       console.error("Error:", error);
-     }
-    }
-
-    // Panggil fungsi ini bersamaan dengan WA
-    document.getElementById('wa-link').addEventListener('click', function(e) {
-      e.preventDefault();
-      sendToGoogleSheets();
-      window.open(this.href, '_blank'); // Buka WA
-    });
-
   </script>
 </body>
 </html>
