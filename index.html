@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -433,7 +432,17 @@
 
   <main>
     <section class="menu-container" id="menu-list">
-      <!-- Menu items will be dynamically inserted here -->
+      <!-- Tambahkan instruksi pemesanan di sini -->
+      <div class="order-instruction" style="background-color: #fff; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h3 style="font-family: 'Playfair Display', serif; color: #d92323; margin-bottom: 1rem; text-align: center;">Cara Memesan</h3>
+        <ol style="padding-left: 1.5rem; color: #555;">
+          <li style="margin-bottom: 0.5rem;">Silakan klik tombol <strong>Tambah (+)/Kurang (-)</strong> pada masing-masing menu untuk mengatur jumlah pesanan Anda</li>
+          <li style="margin-bottom: 0.5rem;">Pesanan Anda akan otomatis muncul di keranjang sebelah kanan</li>
+          <li style="margin-bottom: 0.5rem;">Isi data diri dan alamat lengkap, letakkan pin lokasi secara akurat sesuai dengan alamat Anda</li>
+          <li>Tambahkan catatan jika ada permintaan khusus, lalu klik <strong>Pesan via WhatsApp</strong></li>
+          </ol>
+          <p style="text-align: center; margin-top: 1rem; font-style: bold; color: #777;">Selamat menikmati hidangan lezat kami!</p>
+      </div>     
     </section>
 
     <aside class="order-summary">
@@ -595,29 +604,31 @@
     }
 
     function displayMenu() {
-      const menuList = document.getElementById('menu-list');
-      
-      const foodSection = document.createElement('div');
-      foodSection.className = 'menu-category';
-      foodSection.innerHTML = '<h3>Makanan</h3><div class="menu-grid" id="food-grid"></div>';
-      menuList.appendChild(foodSection);
-      
-      const foodGrid = document.getElementById('food-grid');
-      menuData.makanan.forEach(item => {
-        foodGrid.appendChild(createMenuItem(item));
-      });
-      
-      const drinkSection = document.createElement('div');
-      drinkSection.className = 'menu-category';
-      drinkSection.innerHTML = '<h3>Minuman</h3><div class="menu-grid" id="drink-grid"></div>';
-      menuList.appendChild(drinkSection);
-      
-      const drinkGrid = document.getElementById('drink-grid');
-      menuData.minuman.forEach(item => {
-        drinkGrid.appendChild(createMenuItem(item));
-      });
-    }
-
+  const menuList = document.getElementById('menu-list');
+  
+  // Hanya buat kategori jika belum ada
+  if (!document.getElementById('food-grid')) {
+    const foodSection = document.createElement('div');
+    foodSection.className = 'menu-category';
+    foodSection.innerHTML = '<h3>Makanan</h3><div class="menu-grid" id="food-grid"></div>';
+    menuList.appendChild(foodSection);
+    
+    menuData.makanan.forEach(item => {
+      document.getElementById('food-grid').appendChild(createMenuItem(item));
+    });
+  }
+  
+  if (!document.getElementById('drink-grid')) {
+    const drinkSection = document.createElement('div');
+    drinkSection.className = 'menu-category';
+    drinkSection.innerHTML = '<h3>Minuman</h3><div class="menu-grid" id="drink-grid"></div>';
+    menuList.appendChild(drinkSection);
+    
+    menuData.minuman.forEach(item => {
+      document.getElementById('drink-grid').appendChild(createMenuItem(item));
+    });
+  }
+}
     function createMenuItem(item) {
       const menuItem = document.createElement('div');
       menuItem.className = 'menu-item';
@@ -826,7 +837,7 @@
           "DESKRIPSI": "Butiran putih berkilau seperti embun pagi, nasi dari beras Solok memancarkan kesederhanaan yang memikat. Di setiap suapannya, tersimpan kelembutan tekstur pulen dan aroma harum alami—seperti napas sawah Minang yang masih segar. Bukan sekadar pendamping, ia adalah dasar sempurna yang merangkul setiap rempah dan bumbu, menghadirkan harmoni dalam kesederhanaan.",
           "HARGA": 3000
         },
-	{
+        {
           "NAMA MENU": "Rendang",
           "FOTO": "images/rendang.png",
           "DESKRIPSI": "Rendang adalah mahakarya kuliner Minangkabau yang dimasak dengan penuh kesabaran hingga bumbu meresap sempurna ke dalam daging. Terbuat dari daging sapi pilihan yang lembut dan padat, rendang dimasak perlahan bersama santan dan rempah-rempah khas hingga menghasilkan warna cokelat gelap yang menggoda. Setiap suapan menghadirkan harmoni rasa gurih, pedas, dan manis yang mendalam—bukan sekadar hidangan, tapi pengalaman rasa yang menghangatkan jiwa.",
@@ -871,7 +882,7 @@
         {
           "NAMA MENU": "Ikan Patin",
           "FOTO": "images/gulaiikan.png",
-          "DESKRIPSI": "Gulai Ikan Patin khas Padang adalah sajian berkuah santan yang kaya rasa dan memikat secara visual. Ikan patin segar dimasak perlahan dalam kuah kuning keemasan yang kental, berpadu dengan rempah-rempah khas seperti kunyit, lengkuas, dan daun ruku-ruku yang harum. Tekstur ikan yang lembut menyatu sempurna dengan kuah gulai yang gurih, pedas, dan sedikit asam, menciptakan harmoni rasa yang mendalam. Disajikan dalam mangkuk sederhana namun penuh warna, gulai ini memancarkan kehangatan masakan rumah dengan sentuhan estetika khas Minang.",
+          "DESKRIPSI": "Gulai Ikan Patin khas Padang adalah sajian berkuah santan yang menghadirkan kehangatan dan kekayaan rasa dalam balutan warna kuning keemasan yang menggoda. Ikan patin segar dimasak bersama santan dan rempah-rempah khas seperti kunyit, lengkuas, dan daun ruku-ruku yang harum. Tekstur ikan yang lembut menyatu sempurna dengan kuah gulai yang gurih, pedas, dan sedikit asam, menciptakan harmoni rasa yang mendalam. Disajikan dalam mangkuk sederhana namun penuh warna, gulai ini memancarkan kehangatan masakan rumah dengan sentuhan estetika khas Minang.",
           "HARGA": 16000
         },
         {
@@ -924,40 +935,40 @@
         }
       ],
       "minuman": [
-    	{
-      	  "NAMA MENU": "Es Jeruk",
+        {
+          "NAMA MENU": "Es Jeruk",
           "FOTO": "images/esjeruk.png",
           "DESKRIPSI": "Es Jeruk adalah minuman segar yang memikat dengan warna oranye cerah alami dan tampilan bening yang menggoda. Terbuat dari perasan jeruk segar yang manis-asam, disajikan dengan es batu yang mempercantik tampilannya dalam gelas tinggi berembun. Aroma citrus yang harum berpadu dengan sensasi dingin yang menyegarkan, menjadikan es jeruk sebagai pelengkap sempurna di tengah hidangan lezat. Kesederhanaannya menghadirkan kesan estetik yang menyenangkan, sekaligus menyegarkan tubuh dan pikiran dalam setiap tegukan.",
           "HARGA": 5000
-    	},
-    	{
-      	  "NAMA MENU": "Es Teh",
+        },
+        {
+          "NAMA MENU": "Es Teh",
           "FOTO": "images/esteh.png",
           "DESKRIPSI": "Es Teh adalah minuman klasik yang tampil elegan dengan warna cokelat keemasan yang jernih dan menggoda. Disajikan dalam gelas tinggi berisi es batu yang berkilau, es teh memancarkan kesegaran yang menenangkan sejak pandangan pertama. Aroma teh yang ringan berpadu dengan rasa manis seimbang, menjadikannya pelengkap sempurna untuk segala jenis hidangan. Tampilan sederhananya justru menghadirkan kesan estetik yang bersih dan menyegarkan, menjadikan setiap tegukan es teh sebagai jeda yang menyejukkan di tengah hangatnya sajian.",
           "HARGA": 5000
-    	},
-    	{
+        },
+        {
           "NAMA MENU": "Jeruk Hangat",
           "FOTO": "images/jerukhangat.png",
           "DESKRIPSI": "Jeruk hangat adalah minuman menyehatkan yang tampil cantik dalam kesederhanaannya, dengan warna oranye cerah yang hangat dan aroma citrus yang segar. Disajikan dalam gelas bening atau cangkir sederhana, uap lembut yang mengepul dari permukaannya menciptakan kesan estetik yang menenangkan. Perasan jeruk segar yang hangat ini menghadirkan perpaduan rasa manis dan asam yang lembut, memberikan kehangatan alami sekaligus menyegarkan tubuh. Jeruk hangat bukan hanya minuman penghangat, tapi juga simbol kesegaran yang menenangkan dalam tampilan yang sederhana namun memesona.",
           "HARGA": 5000
-    	},
+        },
         {
           "NAMA MENU": "Teh Hangat",
           "FOTO": "images/tehhangat.png",
           "DESKRIPSI": "Teh hangat adalah sajian minuman yang sederhana namun penuh kehangatan dan estetika alami. Disajikan dalam cangkir atau gelas bening, warna cokelat keemasan teh yang mengepul lembut menciptakan suasana tenang dan nyaman. Aroma khas daun teh yang harum menguar perlahan, menghadirkan sensasi relaksasi sebelum bahkan diseruput. Dengan rasa yang lembut dan menenangkan, teh hangat menjadi pelengkap sempurna di tengah hidangan atau sebagai penutup yang hangat setelah santapan lezat, menciptakan pengalaman minum yang estetik dan penuh kedamaian.",
           "HARGA": 5000
         },
-    	{
+        {
           "NAMA MENU": "Teh Tawar Hangat",
           "FOTO": "images/tehtawar.png",
           "DESKRIPSI": "Teh tawar hangat adalah minuman yang merepresentasikan kesederhanaan dengan pesona alami yang menenangkan. Disajikan dalam cangkir bening atau keramik sederhana, warna cokelat keemasan dari teh yang mengepul lembut menghadirkan nuansa hangat dan estetik. Tanpa tambahan gula, rasa murni daun teh terasa lembut di lidah, memberikan ketenangan sekaligus kesegaran yang halus. Aroma teh yang ringan namun khas memperkaya pengalaman minum, menjadikan teh tawar hangat sebagai pelengkap sempurna dalam setiap waktu istirahat atau setelah menikmati hidangan yang kaya rasa.",
           "HARGA": 3000
         }
-   	]
-    	};
+      ]
+    };
     
-      document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
       displayMenu();
       initMap();
       document.getElementById('service-fee').addEventListener('input', updateOrderSummary);
