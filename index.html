@@ -983,13 +983,11 @@
    	 telepon: document.getElementById('telepon').value,
    	 alamat: document.getElementById('alamat').value,
   	 items: cart.map(item => `${item.name} (${item.quantity}x)`),
-  	 subtotal: document.getElementById('subtotal').textContent.replace("Rp ", ""),
-  	 ongkir: document.getElementById('delivery-fee').value,
-   	 pajak: document.getElementById('tax-toggle').checked ? 
-           	parseFloat(document.getElementById('subtotal').textContent.replace("Rp ", "")) * 0.1 : 0,
-   	 total: document.getElementById('total').textContent.replace("Rp ", ""),
-    	 catatan: document.getElementById('catatan').value
-     };
+  	 subtotal: parseFloat(document.getElementById('subtotal').textContent.replace("Rp ", "")),
+         ongkir: parseFloat(document.getElementById('delivery-fee').value),
+         pajak: parseFloat(document.getElementById('subtotal').textContent.replace("Rp ", "")) * 0.1,
+         total: parseFloat(document.getElementById('total').textContent.replace("Rp ", ""))
+       };
 
      try {
        await fetch('https://script.google.com/macros/s/AKfycbxgPivP8__twdxb1NbVe3soT7tm8TbCs-o0YtYUfCbTUI2nlBE-XK3dDTCOipWag_Eb/exec', {
