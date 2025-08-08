@@ -986,7 +986,7 @@
     	subtotal: document.getElementById('subtotal').textContent.replace("Rp ", ""),
     	ongkir: document.getElementById('delivery-fee').value,
     	pajak: document.getElementById('tax-toggle').checked ? 
-               parseFloat(document.getElementById('subtotal').textContent.replace("Rp ", "")) * 0.1 : 0,
+               parseFloat(document.getElementById('subtotal').textContent.replace("Rp ", "")) * 0.1,
     	total: document.getElementById('total').textContent.replace("Rp ", ""),
     	catatan: document.getElementById('catatan').value
      };
