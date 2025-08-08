@@ -977,35 +977,38 @@
       document.getElementById('customer-form').addEventListener('input', updateOrderSummary);
     });
 
+    // Fungsi untuk kirim data ke Google Sheets
     async function sendToGoogleSheets() {
       const data = {
-    	nama: document.getElementById('nama').value,
-   	 telepon: document.getElementById('telepon').value,
-   	 alamat: document.getElementById('alamat').value,
-  	 items: cart.map(item => `${item.name} (${item.quantity}x)`),
-  	 subtotal: parseFloat(document.getElementById('subtotal').textContent.replace("Rp ", "")),
-         ongkir: parseFloat(document.getElementById('delivery-fee').value),
-         pajak: parseFloat(document.getElementById('subtotal').textContent.replace("Rp ", "")) * 0.1,
-         total: parseFloat(document.getElementById('total').textContent.replace("Rp ", ""))
-       };
+        nama: document.getElementById('nama').value,
+   	telepon: document.getElementById('telepon').value,
+   	alamat: document.getElementById('alamat').value,
+    	items: cart.map(item => `${item.name} (${item.quantity}x)`),
+    	subtotal: parseFloat(document.getElementById('subtotal').textContent.replace("Rp ", "")),
+   	ongkir: parseFloat(document.getElementById('delivery-fee').value),
+    	pajak: document.getElementById('tax-toggle').checked ? 
+      	       parseFloat(document.getElementById('subtotal').textContent.replace("Rp ", "")) * 0.1 : 0,
+   	total: parseFloat(document.getElementById('total').textContent.replace("Rp ", "")),
+   	catatan: document.getElementById('catatan').value
+      };
 
-     try {
-       await fetch('https://script.google.com/macros/s/AKfycbxgPivP8__twdxb1NbVe3soT7tm8TbCs-o0YtYUfCbTUI2nlBE-XK3dDTCOipWag_Eb/exec', {
-   	 method: 'POST',
-         body: JSON.stringify(data)
-       });
-       console.log("Data tersimpan di Google Sheets!");
-     } catch (error) {
-       console.error("Error:", error);
-     }
-   }
+      try {
+   	await fetch('URL_APPS_SCRIPT_ANDA', {
+     	  method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      } catch (error) {
+        console.error("Gagal menyimpan:", error);
+      }
+    }
 
-   // Panggil fungsi ini bersamaan dengan WA
-   document.getElementById('wa-link').addEventListener('click', function(e) {
-     e.preventDefault();
-     sendToGoogleSheets();
-     window.open(this.href, '_blank'); // Buka WA
-   });
+    // Hubungkan ke tombol WhatsApp
+    document.getElementById('wa-link').addEventListener('click', async function(e) {
+      e.preventDefault();
+      await sendToGoogleSheets(); // Kirim ke Sheets
+      window.open(this.href, '_blank'); // Buka WA
+    });
 
   </script>
 </body>
