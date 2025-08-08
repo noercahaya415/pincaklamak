@@ -1006,7 +1006,7 @@
     // Hubungkan ke tombol WhatsApp
     document.getElementById('wa-link').addEventListener('click', async function(e) {
       e.preventDefault();
-      await sendToGoogleSheets(); // Kirim ke Sheets
+      sendToGoogleSheets(); // Kirim ke Sheets
       window.open(this.href, '_blank'); // Buka WA
     });
 
